@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
-import Navbar from '../components/layout/navbar';
+import ThemeProvider from '@/providers/ThemeProvider';
+import Navbar from '@/components/layout/Navbar';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -20,11 +21,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={nunito.className}>
-        <Navbar />
-        <ReactQueryProvider>{children}</ReactQueryProvider>
-        {/* <Footer /> */}
+        <ThemeProvider>
+          <Navbar />
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
