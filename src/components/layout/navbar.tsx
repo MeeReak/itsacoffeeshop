@@ -3,13 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import ThemeToggle from '../ThemeToggle';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="backdrop-blur-md  fixed w-full z-50 shadow-md">
+    <nav className="backdrop-blur-2xl fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href={'/'} className="flex items-center gap-2">
@@ -37,7 +36,6 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <ThemeToggle />
         {/* Mobile Menu Button */}
         <button
           onClick={() => setOpen(!open)}

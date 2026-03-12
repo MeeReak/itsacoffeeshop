@@ -3,7 +3,6 @@ import { Nunito } from 'next/font/google';
 import './globals.css';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
 import ThemeProvider from '@/providers/ThemeProvider';
-import Navbar from '@/components/layout/Navbar';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -24,7 +23,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={nunito.className}>
         <ThemeProvider>
-          <Navbar />
           <ReactQueryProvider>{children}</ReactQueryProvider>
         </ThemeProvider>
       </body>

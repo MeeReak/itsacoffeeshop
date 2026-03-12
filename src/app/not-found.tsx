@@ -1,15 +1,6 @@
-'use client';
-
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 export default function NotFound() {
-  const [mounted, setMounted] = useState(false);
-
-  // Prevent hydration mismatch
-  useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
-
   return (
     <div className="h-screen flex flex-col items-center justify-center px-6 text-center">
       <h1 className="text-8xl font-bold mb-4 text-[#f5dc50]">☕ 404</h1>

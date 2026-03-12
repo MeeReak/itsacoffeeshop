@@ -41,7 +41,7 @@ const useGetCoffee = (id: number) => {
   return useQuery<Coffee>({
     queryKey: ['coffee', id],
     queryFn: async () => {
-      const { data } = await mAxios.get(`/products/${id}`);
+      // const { data } = await mAxios.get(`/products/${id}`);
       //   return data;
       return mockCoffees.find((c) => c.id === id)!;
     },
