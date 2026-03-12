@@ -1,11 +1,15 @@
+import { CoffeeIcon } from 'lucide-react';
 import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="h-screen flex flex-col items-center justify-center px-6 text-center">
-      <h1 className="text-8xl font-bold mb-4 text-[#f5dc50]">☕ 404</h1>
+    <div className="h-screen  flex flex-col items-center justify-center px-6 text-center">
+      <h1 className="text-8xl font-bold mb-4 text-[#f5dc50] relative">
+        <CoffeeIcon className=" absolute -top-2 -right-6 text-black" />
+        404
+      </h1>
       <p className="text-xl md:text-2xl mb-6">
-        Oops! Looks like this coffee cup is empty ☕
+        Oops! Looks like this coffee cup is empty
       </p>
       <p className="mb-8 max-w-md">
         The page you’re looking for is brewing somewhere else. Don’t worry —

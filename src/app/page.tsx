@@ -2,47 +2,58 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { FeatureCard } from '@/components/FeatureCard';
-
+import { FeedBackCard } from '@/components/FeedBackCard';
+import Navbar from '@/components/layout/Navbar';
 const coffees = [
   {
     id: '1',
-    name: 'Cappuccino',
-    desc: 'Rich espresso with creamy steamed milk',
-    price: '$4.50',
+    name: 'Iced Latte',
+    desc: 'Smooth espresso with chilled milk and ice',
+    price: '$2.80',
     img: '/coffee/cappuccino.jpg',
   },
   {
     id: '2',
-    name: 'Latte',
-    desc: 'Smooth espresso blended with silky milk',
-    price: '$4.80',
+    name: 'Caramel Latte',
+    desc: 'Rich espresso with creamy milk and caramel',
+    price: '$3.20',
     img: '/coffee/latte.jpg',
   },
   {
     id: '3',
-    name: 'Americano',
-    desc: 'Bold espresso diluted with hot water',
+    name: 'Matcha Latte',
+    desc: 'Premium matcha blended with fresh milk',
     price: '$3.50',
     img: '/coffee/americano.jpg',
   },
   {
     id: '4',
-    name: 'Mocha',
-    desc: 'Chocolate espresso topped with foam',
-    price: '$5.00',
+    name: 'Chocolate Frappe',
+    desc: 'Icy chocolate drink topped with whipped cream',
+    price: '$3.80',
     img: '/coffee/mocha.jpg',
   },
 ];
 
 const testimonials = [
-  { text: 'Best coffee in town!', name: 'Sophia L.' },
-  { text: 'Amazing atmosphere and delicious drinks.', name: 'Michael K.' },
-  { text: 'My favorite place to start the day.', name: 'Anna W.' },
+  {
+    text: 'Best iced latte in Phnom Penh!',
+    name: 'Dara S.',
+    avatar: '/customers/customer1.jpg',
+  },
+  {
+    text: 'Great place to relax and work.',
+    name: 'Sokha P.',
+    avatar: '/customers/customer2.jpg',
+  },
+  {
+    text: 'Affordable coffee and amazing vibe.',
+    name: 'Lina M.',
+    avatar: '/customers/customer3.jpg',
+  },
 ];
-
 const galleryImages = [
   '/coffee/latte-art.jpg',
   '/coffee/espresso-shot.jpg',
@@ -55,9 +66,8 @@ const galleryImages = [
 export default function Home() {
   return (
     <main className="bg-[#f8f6f1]">
-      <Navbar />
-
       {/* HERO */}
+      <Navbar />
       <section className="relative h-screen flex items-center justify-center text-center text-white">
         <Image
           src="/coffee/cafe-shop.jpg"
@@ -67,11 +77,11 @@ export default function Home() {
         />
         <div className="relative z-10 max-w-2xl px-6">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Freshly Brewed Coffee Every Morning
+            Fuel Your Day with Great Coffee
           </h1>
           <p className="mb-8 text-lg text-gray-200">
-            Experience the aroma of premium roasted beans and handcrafted
-            coffee.
+            Fresh coffee, cool vibes, and the perfect place to recharge in Phnom
+            Penh.
           </p>
           <div className="flex gap-4 justify-center">
             <Link
@@ -107,10 +117,10 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">Our Story</h2>
           <p className="text-gray-600 leading-relaxed">
-            Our coffee shop was built on passion for exceptional coffee. We
-            carefully select premium beans from around the world and roast them
-            to perfection. Every cup we serve is crafted with love, ensuring
-            rich flavors and unforgettable moments.
+            We believe great coffee should be simple, affordable, and enjoyable
+            every day. Our café is a place where friends meet, ideas grow, and
+            every cup brings a moment of energy and comfort. Whether you need a
+            quick coffee or a relaxing space to hang out, we’re here for you.
           </p>
         </div>
       </section>
@@ -120,27 +130,30 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
         <div className="grid md:grid-cols-4 gap-8 text-center">
           <div>
-            <h3 className="font-semibold text-lg mb-2">Organic Beans</h3>
+            <h3 className="font-semibold text-lg mb-2">Fast Service</h3>
             <p className="text-sm text-gray-500">
-              Carefully sourced organic coffee beans.
+              Get your favorite drink quickly, perfect for busy days.
             </p>
           </div>
+
           <div>
-            <h3 className="font-semibold text-lg mb-2">Expert Baristas</h3>
+            <h3 className="font-semibold text-lg mb-2">Affordable Drinks</h3>
             <p className="text-sm text-gray-500">
-              Skilled baristas crafting every cup.
+              Quality coffee at prices everyone can enjoy.
             </p>
           </div>
+
           <div>
-            <h3 className="font-semibold text-lg mb-2">Fresh Roasting</h3>
+            <h3 className="font-semibold text-lg mb-2">Modern Café</h3>
             <p className="text-sm text-gray-500">
-              Beans roasted fresh every week.
+              A stylish place to work, meet friends, or relax.
             </p>
           </div>
+
           <div>
-            <h3 className="font-semibold text-lg mb-2">Cozy Atmosphere</h3>
+            <h3 className="font-semibold text-lg mb-2">Fresh Ingredients</h3>
             <p className="text-sm text-gray-500">
-              Relax and enjoy the perfect café vibe.
+              We use high-quality coffee and fresh ingredients.
             </p>
           </div>
         </div>
@@ -166,23 +179,23 @@ export default function Home() {
       {/* TESTIMONIALS */}
       <section className="max-w-6xl mx-auto py-20 px-6 text-center">
         <h2 className="text-3xl font-bold mb-12">What Our Customers Say</h2>
+
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((t, i) => (
-            <div key={i} className="bg-white p-6 rounded-lg shadow">
-              <p className="text-yellow-400 mb-3">★★★★★</p>
-              <p className="text-gray-600">“ {t.text} ”</p>
-              <p className="mt-2 font-semibold">{t.name}</p>
-            </div>
+            <FeedBackCard
+              key={i}
+              text={t.text}
+              name={t.name}
+              avatar={t.avatar}
+            />
           ))}
         </div>
       </section>
 
       {/* CALL TO ACTION */}
       <section className="py-20 px-6 text-center bg-[#f5dc50]">
-        <h2 className="text-3xl font-bold mb-6">
-          Ready for Your Perfect Coffee?
-        </h2>
-        <p className="mb-8">Visit our café or order online now!</p>
+        <h2 className="text-3xl font-bold mb-6">Need a Coffee Break?</h2>
+        <p className="mb-8">Order your favorite drink and enjoy the moment.</p>
         <Link
           href="/order"
           className="bg-[#060709] text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition"

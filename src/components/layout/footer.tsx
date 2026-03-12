@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-10">
         {/* Brand */}
         <div>
-          <h2 className="text-2xl font-bold text-[#f5dc50]">CoffeeHouse</h2>
+          <h2 className="text-2xl font-bold text-[#f5dc50]">ItsCoffeeShop</h2>
           <p className="mt-3 text-sm text-gray-400">
-            Fresh coffee brewed with passion. Start your day with the perfect
-            cup.
+            Fresh coffee, cool vibes, and the perfect place to recharge in Phnom
+            Penh.
           </p>
         </div>
 
@@ -37,7 +37,7 @@ export default function Footer() {
           <h3 className="font-semibold mb-3">Contact</h3>
           <p className="text-gray-400 text-sm">Phnom Penh, Cambodia</p>
           <p className="text-gray-400 text-sm mt-1">+855 12 345 678</p>
-          <p className="text-gray-400 text-sm mt-1">coffee@email.com</p>
+          <p className="text-gray-400 text-sm mt-1">itscoffeeshop@email.com</p>
         </div>
       </div>
 

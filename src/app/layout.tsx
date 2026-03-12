@@ -3,6 +3,7 @@ import { Nunito } from 'next/font/google';
 import './globals.css';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
 import ThemeProvider from '@/providers/ThemeProvider';
+import ScrollToTop from '@/components/ScrollToTop';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={nunito.className}>
         <ThemeProvider>
           <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ScrollToTop />
         </ThemeProvider>
       </body>
     </html>

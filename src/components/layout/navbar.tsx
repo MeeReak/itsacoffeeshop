@@ -2,10 +2,19 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname(); // current path
+
+  const navItems = [
+    { label: 'Home', path: '' },
+    { label: 'Menu', path: 'menu' },
+    { label: 'About', path: 'about' },
+    { label: 'Contact', path: 'contact' },
+  ];
 
   return (
     <nav className="backdrop-blur-2xl fixed w-full z-50">
@@ -20,21 +29,27 @@ export default function Navbar() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 text-sm">
-          {[
-            { label: 'Home', path: '' },
-            { label: 'Menu', path: 'menu' },
-            { label: 'About', path: 'about' },
-            { label: 'Contact', path: 'contact' },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              href={`/${item.path.toLowerCase()}`}
-              className="relative group hover:text-[#f5dc50] transition"
-            >
-              {item.label}
-              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-[#f5dc50] group-hover:w-full transition-all dark:text-white text-black"></span>
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const href = `/${item.path.toLowerCase()}`;
+            const isActive = pathname === href;
+
+            return (
+              <Link
+                key={item.label}
+                href={href}
+                className={`relative group text-base font-medium transition ${
+                  isActive ? 'text-[#f5dc50]' : 'text-white'
+                }`}
+              >
+                {item.label}
+                <span
+                  className={`absolute left-0 -bottom-1 h-0.5 bg-[#f5dc50] transition-all ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}
+                ></span>
+              </Link>
+            );
+          })}
         </div>
         {/* Mobile Menu Button */}
         <button
