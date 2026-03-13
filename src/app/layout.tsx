@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
-import ThemeProvider from '@/providers/ThemeProvider';
 import ScrollToTop from '@/components/ScrollToTop';
 
 const nunito = Nunito({
@@ -23,10 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={nunito.className}>
-        <ThemeProvider>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
-          <ScrollToTop />
-        </ThemeProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ScrollToTop />
       </body>
     </html>
   );
