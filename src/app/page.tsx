@@ -5,31 +5,30 @@ import Link from 'next/link';
 import Footer from '@/components/layout/Footer';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FeedBackCard } from '@/components/FeedBackCard';
-import Navbar from '@/components/layout/Navbar';
 const coffees = [
   {
-    id: '1',
+    id: 1,
     name: 'Iced Latte',
     desc: 'Smooth espresso with chilled milk and ice',
     price: '$2.80',
     img: '/coffee/cappuccino.jpg',
   },
   {
-    id: '2',
+    id: 2,
     name: 'Caramel Latte',
     desc: 'Rich espresso with creamy milk and caramel',
     price: '$3.20',
     img: '/coffee/latte.jpg',
   },
   {
-    id: '3',
+    id: 3,
     name: 'Matcha Latte',
     desc: 'Premium matcha blended with fresh milk',
     price: '$3.50',
     img: '/coffee/americano.jpg',
   },
   {
-    id: '4',
+    id: 4,
     name: 'Chocolate Frappe',
     desc: 'Icy chocolate drink topped with whipped cream',
     price: '$3.80',
@@ -67,7 +66,6 @@ export default function Home() {
   return (
     <main className="bg-[#f8f6f1]">
       {/* HERO */}
-      <Navbar />
       <section className="relative h-screen flex items-center justify-center text-center text-white">
         <Image
           src="/coffee/cafe-shop.jpg"

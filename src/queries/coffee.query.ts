@@ -2,27 +2,27 @@ import { useQuery } from '@tanstack/react-query';
 import { Coffee } from '@/type/coffee';
 
 const mockCoffees: Coffee[] = [
-  {
-    id: 1,
-    name: 'Espresso',
-    price: 2.5,
-    imageUrl: '/coffee/espresso.png',
-    description: 'Strong coffee shot',
-  },
-  {
-    id: 2,
-    name: 'Latte',
-    price: 3.5,
-    imageUrl: '/coffee/latte.png',
-    description: 'Milk + coffee',
-  },
-  {
-    id: 3,
-    name: 'Cappuccino',
-    price: 3,
-    imageUrl: '/coffee/cappuccino.png',
-    description: 'Foamy milk coffee',
-  },
+  // {
+  //   id: 1,
+  //   name: 'Espresso',
+  //   price: 2.5,
+  //   imageUrl: '/coffee/espresso.png',
+  //   description: 'Strong coffee shot',
+  // },
+  // {
+  //   id: 2,
+  //   name: 'Latte',
+  //   price: 3.5,
+  //   imageUrl: '/coffee/latte.png',
+  //   description: 'Milk + coffee',
+  // },
+  // {
+  //   id: 3,
+  //   name: 'Cappuccino',
+  //   price: 3,
+  //   imageUrl: '/coffee/cappuccino.png',
+  //   description: 'Foamy milk coffee',
+  // },
 ];
 
 const useGetCoffees = () => {

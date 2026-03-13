@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 const coffees = [
   {
-    id: '1',
+    id: 1,
     name: 'Iced Latte',
     desc: 'Smooth espresso with chilled milk and ice',
     price: '$2.80',
@@ -16,7 +16,7 @@ const coffees = [
     category: 'Coffee',
   },
   {
-    id: '2',
+    id: 2,
     name: 'Caramel Latte',
     desc: 'Rich espresso with creamy milk and caramel',
     price: '$3.20',
@@ -24,7 +24,7 @@ const coffees = [
     category: 'Coffee',
   },
   {
-    id: '3',
+    id: 3,
     name: 'Matcha Latte',
     desc: 'Premium matcha blended with fresh milk',
     price: '$3.50',
@@ -32,7 +32,7 @@ const coffees = [
     category: 'Tea',
   },
   {
-    id: '4',
+    id: 4,
     name: 'Chocolate Frappe',
     desc: 'Icy chocolate drink topped with whipped cream',
     price: '$3.80',
@@ -58,12 +58,6 @@ export default function MenuPage() {
 
   return (
     <main className="bg-[#f8f6f1] min-h-screen">
-      <Link
-        href={'/'}
-        className="fixed top-6 left-40 z-50 w-12 h-12 bg-[#f5dc50] text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
-      >
-        <ArrowLeftIcon />
-      </Link>
       {/* HERO */}
       <section className="relative h-72 flex items-center justify-center text-center text-white mb-12">
         <Image

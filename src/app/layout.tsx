@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
-import { Nunito } from 'next/font/google';
+import { Nunito, Geist } from 'next/font/google';
 import './globals.css';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
 import ScrollToTop from '@/components/ScrollToTop';
+import { CartProvider } from '@/contexts/CartContext';
+import Navbar from '@/components/layout/Navbar';
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -20,9 +25,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body className={nunito.className}>
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ReactQueryProvider>
+          <CartProvider>
+            <Navbar />
+            {children}
+          </CartProvider>
+        </ReactQueryProvider>
         <ScrollToTop />
       </body>
     </html>
