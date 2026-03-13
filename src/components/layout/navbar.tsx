@@ -1,17 +1,16 @@
 'use client';
 
-import { useCart } from '@/contexts/CartContext';
-import { ArrowLeftIcon, ShoppingCartIcon } from 'lucide-react';
+import { ArrowLeftIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { CartDialog } from '../CartDialog';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const { cart } = useCart();
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+  const router = useRouter();
   const navItems = [
     { label: 'Home', path: '' },
     { label: 'Menu', path: 'menu' },
@@ -26,7 +25,7 @@ export default function Navbar() {
       const baseClass = mobile
         ? 'text-white hover:text-[#f5dc50] transition'
         : `relative group text-base font-medium transition ${
-            isActive ? 'text-[#f5dc50]' : 'text-white'
+            isActive ? 'text-[#f5dc50]' : 'text-black'
           }`;
 
       return (
@@ -96,24 +95,15 @@ export default function Navbar() {
           )}
         </nav>
       ) : (
-        <div>
-          <Link
-            href={'/'}
+        <div className="fixed w-full z-50">
+          <button
+            onClick={() => router.back()}
             className="fixed top-6 left-40 z-50 w-12 h-12 bg-[#f8f6f1] text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
           >
             <ArrowLeftIcon />
-          </Link>
+          </button>
 
-          <div className="fixed top-6 right-40 z-50 w-12 h-12 bg-[#f8f6f1] text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform">
-            <div className="relative">
-              <ShoppingCartIcon />
-              {totalItems > 0 && (
-                <span className=" absolute -top-2 -right-2 text-sm px-1.5 bg-[#f5dc50] rounded-full">
-                  {totalItems}
-                </span>
-              )}
-            </div>
-          </div>
+          <CartDialog />
         </div>
       )}
     </>

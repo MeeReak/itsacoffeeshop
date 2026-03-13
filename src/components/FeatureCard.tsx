@@ -7,7 +7,7 @@ interface FeatureCardProp {
     img: string;
     name: string;
     desc: string;
-    price: string;
+    price: number;
   };
 }
 
@@ -15,7 +15,14 @@ export const FeatureCard = ({ coffee }: FeatureCardProp) => {
   const { addItem } = useCart();
 
   const handleAdd = () => {
-    addItem({ id: coffee.id, name: coffee.name, price: coffee.price, qty: 1 });
+    addItem({
+      id: coffee.id,
+      name: coffee.name,
+      price: coffee.price,
+      src: coffee.img,
+      alt: coffee.img,
+      qty: 1,
+    });
   };
   return (
     <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">

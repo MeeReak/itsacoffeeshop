@@ -1,11 +1,11 @@
-import { useCart } from "@/contexts/CartContext";
-
+import { useCart } from '@/contexts/CartContext';
 
 export default function Cart() {
   const { cart, removeItem, clearCart } = useCart();
 
   const total = cart.reduce(
-    (acc, item) => acc + parseFloat(item.price.replace('$', '')) * item.qty,
+    (acc, item) =>
+      acc + parseFloat(item.price.toString().replace('$', '')) * item.qty,
     0,
   );
 

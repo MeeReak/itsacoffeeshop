@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { FeatureCard } from '@/components/FeatureCard';
-import Link from 'next/link';
-import { ArrowLeftIcon } from 'lucide-react';
 import Image from 'next/image';
 
 const coffees = [
@@ -11,7 +9,7 @@ const coffees = [
     id: 1,
     name: 'Iced Latte',
     desc: 'Smooth espresso with chilled milk and ice',
-    price: '$2.80',
+    price: 2.8,
     img: '/coffee/cappuccino.jpg',
     category: 'Coffee',
   },
@@ -19,7 +17,7 @@ const coffees = [
     id: 2,
     name: 'Caramel Latte',
     desc: 'Rich espresso with creamy milk and caramel',
-    price: '$3.20',
+    price: 3.2,
     img: '/coffee/latte.jpg',
     category: 'Coffee',
   },
@@ -27,7 +25,7 @@ const coffees = [
     id: 3,
     name: 'Matcha Latte',
     desc: 'Premium matcha blended with fresh milk',
-    price: '$3.50',
+    price: 3.5,
     img: '/coffee/americano.jpg',
     category: 'Tea',
   },
@@ -35,7 +33,39 @@ const coffees = [
     id: 4,
     name: 'Chocolate Frappe',
     desc: 'Icy chocolate drink topped with whipped cream',
-    price: '$3.80',
+    price: 3.8,
+    img: '/coffee/mocha.jpg',
+    category: 'Frappes',
+  },
+  {
+    id: 5,
+    name: 'Iced Latte',
+    desc: 'Smooth espresso with chilled milk and ice',
+    price: 2.8,
+    img: '/coffee/cappuccino.jpg',
+    category: 'Coffee',
+  },
+  {
+    id: 6,
+    name: 'Caramel Latte',
+    desc: 'Rich espresso with creamy milk and caramel',
+    price: 3.2,
+    img: '/coffee/latte.jpg',
+    category: 'Coffee',
+  },
+  {
+    id: 7,
+    name: 'Matcha Latte',
+    desc: 'Premium matcha blended with fresh milk',
+    price: 3.5,
+    img: '/coffee/americano.jpg',
+    category: 'Tea',
+  },
+  {
+    id: 8,
+    name: 'Chocolate Frappe',
+    desc: 'Icy chocolate drink topped with whipped cream',
+    price: 3.8,
     img: '/coffee/mocha.jpg',
     category: 'Frappes',
   },
@@ -59,7 +89,7 @@ export default function MenuPage() {
   return (
     <main className="bg-[#f8f6f1] min-h-screen">
       {/* HERO */}
-      <section className="relative h-72 flex items-center justify-center text-center text-white mb-12">
+      <section className="relative h-64 flex items-center justify-center text-center text-white mb-12">
         <Image
           src="/coffee/menu-coffee.jpg"
           alt="menu hero"
