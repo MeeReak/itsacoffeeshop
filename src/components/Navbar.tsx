@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { CartDialog } from '../CartDialog';
+import { CartDialog } from './CartDialog';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);

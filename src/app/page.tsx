@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import Footer from '@/components/layout/Footer';
+import Footer from '@/components/Footer';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FeedBackCard } from '@/components/FeedBackCard';
 const coffees = [

@@ -4,7 +4,7 @@ import './globals.css';
 import ReactQueryProvider from '@/providers/ReactQueryProvider';
 import ScrollToTop from '@/components/ScrollToTop';
 import { CartProvider } from '@/contexts/CartContext';
-import Navbar from '@/components/layout/Navbar';
+import Navbar from '@/components/Navbar';
 import { cn } from '@/lib/utils';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
