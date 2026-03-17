@@ -9,7 +9,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
-import { XIcon, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import QRCode from 'react-qr-code';
 
 interface QrDialogProps {
@@ -70,7 +70,7 @@ export const QrDialog: React.FC<QrDialogProps> = ({
                 ? 'Thank you for your payment!'
                 : state === 'error'
                   ? 'Something went wrong. Please try again.'
-                  : 'Open your Banking app and scan this QR code to pay.'}
+                  : 'Open your app and scan this QR code to pay.'}
           </p>
 
           {/* Close Button */}

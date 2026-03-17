@@ -14,6 +14,14 @@ type CartItem = {
   price: number;
   src: string;
   alt: string;
+  sugar: string;
+  ice: string;
+  coffeeLevel: string;
+  // size: 'S' | 'M' | 'L';
+  // sugar: '0%' | '25%' | '50%' | '75%' | '100%';
+  // ice: 'No Ice' | 'Less Ice' | 'Normal Ice';
+  // coffeeLevel?: 'Less Coffee' | 'Extra Shot';
+  note?: string;
   qty: number;
 };
 
@@ -29,16 +37,12 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window === 'undefined') return [];
 
-  // Load cart from localStorage
-  useEffect(() => {
     const stored = localStorage.getItem('cart');
-
-    if (stored) {
-      setCart(JSON.parse(stored));
-    }
-  }, []);
+    return stored ? JSON.parse(stored) : [];
+  });
 
   // Save cart
   useEffect(() => {
@@ -47,11 +51,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = (item: CartItem) => {
     setCart((prev) => {
-      const exists = prev.find((i) => i.id === item.id);
+      const exists = prev.find(
+        (i) =>
+          i.id === item.id &&
+          i.sugar === item.sugar &&
+          i.ice === item.ice &&
+          i.coffeeLevel === item.coffeeLevel,
+      );
 
       if (exists) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, qty: i.qty + item.qty } : i,
+          i === exists ? { ...i, qty: i.qty + item.qty } : i,
         );
       }
 

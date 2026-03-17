@@ -1,6 +1,6 @@
 import { useCart } from '@/contexts/CartContext';
 
-export default function Cart() {
+export default function CartItem() {
   const { cart, removeItem, clearCart } = useCart();
 
   const total = cart.reduce(

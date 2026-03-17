@@ -5,9 +5,9 @@ import ReactQueryProvider from '@/providers/ReactQueryProvider';
 import ScrollToTop from '@/components/ScrollToTop';
 import { CartProvider } from '@/contexts/CartContext';
 import Navbar from '@/components/layout/Navbar';
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en" className={cn('font-sans', geist.variable)}>
       <body className={nunito.className}>
         <ReactQueryProvider>
           <CartProvider>

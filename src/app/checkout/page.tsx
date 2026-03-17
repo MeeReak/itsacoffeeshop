@@ -43,10 +43,10 @@ export default function CheckoutPage() {
     }, 1500);
   };
 
-  const handlePaymentSuccess = () => {
-    setQrState('success');
-    clearCart();
-  };
+  // const handlePaymentSuccess = () => {
+  //   setQrState('success');
+  //   clearCart();
+  // };
 
   return (
     <div className="bg-[#f8f6f1] min-h-screen py-12 px-4 md:px-8">
