@@ -1,7 +1,7 @@
 'use client';
 
 import { CircleIcon } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 interface OptionItem<T extends string> {
   label: string;
@@ -16,6 +16,7 @@ interface LevelSelectProps<T extends string> {
   value?: T;
   onChange: (val: T) => void;
   required?: boolean;
+  error?: boolean;
 }
 
 export const LevelSelect = <T extends string>({
@@ -25,6 +26,7 @@ export const LevelSelect = <T extends string>({
   value,
   onChange,
   required = false,
+  error = false,
 }: LevelSelectProps<T>) => {
   const [selected, setSelected] = useState<T | undefined>(value);
   const [done, setDone] = useState(false);
@@ -46,11 +48,13 @@ export const LevelSelect = <T extends string>({
     }
   };
 
-  const containerClass = required
-    ? done || animateOverlay
-      ? 'bg-[#f8f8f8] px-3 border relative overflow-hidden'
-      : 'bg-[#fefce8] px-3 border relative overflow-hidden'
-    : 'bg-none border-none px-0 relative';
+  const containerClass = error
+    ? 'border border-red-500 bg-[#fefce8] px-3'
+    : required
+      ? done || animateOverlay
+        ? 'bg-[#f8f8f8] px-3 border relative overflow-hidden'
+        : 'bg-[#fefce8] px-3 border relative overflow-hidden'
+      : 'bg-none border-none px-0 relative';
 
   const badgeClass = done
     ? 'bg-white border text-black'

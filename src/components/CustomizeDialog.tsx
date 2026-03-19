@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 
 import {
@@ -13,6 +13,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { LevelSelect } from './LevelSelect';
+import { Controller, FieldErrors, useForm } from 'react-hook-form';
 
 interface CustomizeDialogProps {
   coffee: {
@@ -24,22 +25,47 @@ interface CustomizeDialogProps {
   };
 }
 
+type CustomizeForm = {
+  sugar: 'no' | 'less' | 'normal' | 'more';
+  ice: 'no' | 'less' | 'normal' | 'more' | 'separate';
+  coffeeLevel: 'less' | 'normal' | 'extra';
+  note: string;
+  qty: number;
+};
+
 export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
+  const {
+    reset,
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    register,
+    formState: { errors },
+  } = useForm<CustomizeForm>({
+    defaultValues: {
+      coffeeLevel: 'normal',
+      qty: 1,
+    },
+  });
+  const [open, setOpen] = useState(false);
+  const sugar = watch('sugar');
+  const ice = watch('ice');
+  const coffeeLevel = watch('coffeeLevel');
+  const qty = watch('qty');
+
   const { addItem } = useCart();
+  const sugarRef = useRef<HTMLDivElement>(null);
+  const iceRef = useRef<HTMLDivElement>(null);
+  const coffeeRef = useRef<HTMLDivElement>(null);
 
   const [scrolled, setScrolled] = useState(false);
-
-  const [sugar, setSugar] = useState<
-    'no' | 'less' | 'normal' | 'more' | undefined
-  >();
-  const [ice, setIce] = useState<
-    'no' | 'less' | 'normal' | 'more' | 'separate' | undefined
-  >();
-  const [coffeeLevel, setCoffeeLevel] = useState<
-    'less' | 'normal' | 'extra' | undefined
-  >();
-  const [note, setNote] = useState('');
-  const [qty, setQty] = useState(1);
+  const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
+    ref.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
 
   const coffeePrice = {
     less: 0,
@@ -51,25 +77,27 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
 
   const finalPrice = coffee.price + coffeePrice[selectedCoffeeLevel];
 
-  const handleAdd = () => {
-    if (!sugar || !ice) {
-      alert('Please select required options');
-      return;
-    }
-
+  const onSubmit = (data: CustomizeForm) => {
     addItem({
       id: coffee.id,
       name: coffee.name,
       price: finalPrice,
       src: coffee.img,
       alt: coffee.name,
-      sugar,
-      ice,
-      coffeeLevel: selectedCoffeeLevel,
-      note,
-      qty,
+      ...data,
     });
+    reset();
+    setOpen(false);
   };
+
+  const onError = (errors: FieldErrors<CustomizeForm>) => {
+    if (errors.sugar) {
+      scrollTo(sugarRef);
+    } else if (errors.ice) {
+      scrollTo(iceRef);
+    }
+  };
+
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (e.currentTarget.scrollTop > 100) {
       setScrolled(true);
@@ -79,7 +107,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       {/* Add Button */}
       <DialogTrigger className="text-sm bg-[#060709] text-white px-3 py-1 rounded">
         Add
@@ -127,47 +155,69 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
           {/* SIZE */}
 
           {/* ICE */}
-          <div className="mt-5">
-            <LevelSelect
-              title="Sugar Level"
-              subTitle="Select 1"
-              value={sugar}
-              onChange={setSugar} // sets sugar state directly
-              required
-              options={[
-                { label: 'No Sweet', value: 'no' },
-                { label: 'Less Sweet', value: 'less' },
-                { label: 'Normal Sweet', value: 'normal' },
-                { label: 'More Sweet', value: 'more' },
-              ]}
+          <div ref={sugarRef} className="mt-5 scroll-mt-20">
+            <Controller
+              name="sugar"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <LevelSelect
+                  title="Sugar Level"
+                  subTitle="Select 1"
+                  value={field.value}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    scrollTo(iceRef);
+                  }}
+                  required
+                  error={!!errors.sugar}
+                  options={[
+                    { label: 'No Sweet', value: 'no' },
+                    { label: 'Less Sweet', value: 'less' },
+                    { label: 'Normal Sweet', value: 'normal' },
+                    { label: 'More Sweet', value: 'more' },
+                  ]}
+                />
+              )}
             />
           </div>
 
           {/* SUGAR */}
-          <div className="mt-5">
-            <LevelSelect
-              title="Ice Level"
-              subTitle="Select 1"
-              value={ice}
-              onChange={setIce}
-              required
-              options={[
-                { label: 'No Ice', value: 'no' },
-                { label: 'Less Ice', value: 'less' },
-                { label: 'Normal Ice', value: 'normal' },
-                { label: 'More Ice', value: 'more' },
-                { label: 'Ice Separate', value: 'separate' },
-              ]}
+          <div ref={iceRef} className="mt-5 scroll-mt-20">
+            <Controller
+              name="ice"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <LevelSelect
+                  title="Ice Level"
+                  subTitle="Select 1"
+                  value={field.value}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    scrollTo(coffeeRef);
+                  }}
+                  required
+                  error={!!errors.ice}
+                  options={[
+                    { label: 'No Ice', value: 'no' },
+                    { label: 'Less Ice', value: 'less' },
+                    { label: 'Normal Ice', value: 'normal' },
+                    { label: 'More Ice', value: 'more' },
+                    { label: 'Ice Separate', value: 'separate' },
+                  ]}
+                />
+              )}
             />
           </div>
 
-          <div>
+          <div ref={coffeeRef} className="scroll-mt-20">
             <LevelSelect
               title="Coffee Level"
               subTitle="Select 1"
               value={coffeeLevel}
               onChange={(val) =>
-                setCoffeeLevel(val as 'less' | 'normal' | 'extra')
+                setValue('coffeeLevel', val as 'less' | 'normal' | 'extra')
               }
               options={[
                 { label: 'Less Coffee', value: 'less' },
@@ -175,7 +225,6 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
               ]}
             />
           </div>
-
           {/* NOTE */}
           <div className="mt-6">
             <p className="font-bold text-lg mb-1">Special Instructions</p>
@@ -185,10 +234,9 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
             </p>
 
             <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
+              {...register('note')}
               placeholder="Tell us here!"
-              className="w-full border rounded-lg p-2 min-h-24 scrollbar-hide"
+              className="w-full border rounded-lg p-2 min-h-24"
             />
           </div>
 
@@ -197,7 +245,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
             {/* Quantity */}
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                onClick={() => setValue('qty', Math.max(1, qty - 1))}
                 className="border px-3 py-1 rounded"
               >
                 -
@@ -206,7 +254,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
               <span className="font-semibold">{qty}</span>
 
               <button
-                onClick={() => setQty((q) => q + 1)}
+                onClick={() => setValue('qty', qty + 1)}
                 className="border px-3 py-1 rounded"
               >
                 +
@@ -214,12 +262,18 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
             </div>
 
             {/* Add To Cart */}
-            <DialogClose
-              onClick={handleAdd}
+            {/* <DialogClose
+              onClick={handleSubmit(onSubmit)}
               className="bg-[#f5dc50] px-6 py-2 rounded font-semibold"
             >
               Add
-            </DialogClose>
+            </DialogClose> */}
+            <button
+              className="bg-[#f5dc50] px-6 py-2 rounded font-semibold"
+              onClick={handleSubmit(onSubmit, onError)}
+            >
+              Add
+            </button>
           </div>
         </div>
       </DialogContent>

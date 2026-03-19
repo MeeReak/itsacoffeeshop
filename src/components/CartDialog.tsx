@@ -12,7 +12,6 @@ import { ShoppingCartIcon } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { OrderCard } from './OrderCard';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
 
 export function CartDialog() {
   const { cart } = useCart();
@@ -25,13 +24,6 @@ export function CartDialog() {
       sum + parseFloat(item.price.toString().replace('$', '')) * item.qty,
     0,
   );
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
 
   return (
     <Dialog>

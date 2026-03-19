@@ -17,10 +17,6 @@ type CartItem = {
   sugar: string;
   ice: string;
   coffeeLevel: string;
-  // size: 'S' | 'M' | 'L';
-  // sugar: '0%' | '25%' | '50%' | '75%' | '100%';
-  // ice: 'No Ice' | 'Less Ice' | 'Normal Ice';
-  // coffeeLevel?: 'Less Coffee' | 'Extra Shot';
   note?: string;
   qty: number;
 };
