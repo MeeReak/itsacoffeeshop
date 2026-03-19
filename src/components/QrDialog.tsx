@@ -19,7 +19,7 @@ interface QrDialogProps {
 export const QrDialog: React.FC<QrDialogProps> = ({ state = 'idle' }) => {
   return (
     <Dialog>
-      <DialogTrigger className="bg-black text-white px-5 py-3 rounded-lg hover:opacity-90 transition text-lg font-medium">
+      <DialogTrigger className="bg-black text-white px-5 py-3 rounded-lg hover:opacity-90 transition text-lg font-medium w-full">
         Pay with QR
       </DialogTrigger>
 

@@ -98,9 +98,10 @@ export default function Navbar() {
         <div className="fixed w-full z-50">
           <button
             onClick={() => router.back()}
-            className="cursor-pointer fixed top-6 left-40 z-50 w-12 h-12 bg-[#f8f6f1] text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+            className="cursor-pointer fixed top-6 left-40 z-50 w-12 h-12 bg-[#f5dc50]  text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
           >
-            <ArrowLeftIcon />
+              <ArrowLeftIcon />
+              
           </button>
 
           {pathname !== '/checkout' && <CartDialog />}

@@ -1,6 +1,7 @@
 import { useCart } from '@/contexts/CartContext';
 import { MinusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import Image from 'next/image';
+import { Badge } from './ui/badge';
 
 interface OrderCardProp {
   order: {
@@ -11,57 +12,82 @@ interface OrderCardProp {
     name: string;
     price: number;
     qty: number;
+
+    ice?: string;
+    sugar?: string;
+    size?: string;
   };
 }
+
 export const OrderCard = ({ order }: OrderCardProp) => {
   const { decreaseQty, increaseQty, removeItem } = useCart();
-  return (
-    <div
-      key={order.id}
-      className="flex items-center justify-between border rounded-lg p-4"
-    >
-      {/* Image + Info */}
-      <div className="flex flex-1 items-center gap-4 -ml-2">
-        <Image
-          src={order.src}
-          alt={order.name}
-          width={60}
-          height={60}
-          className="rounded-lg "
-        />
 
-        <div>
-          <p className="font-semibold">{order.name}</p>
-          <p className="text-sm text-gray-500">${order.price}</p>
+  const itemTotal = order.price * order.qty;
+
+  return (
+    <div className="flex items-center gap-4 p-4 border rounded-xl bg-white shadow-sm hover:shadow-md transition">
+      {/* Coffee Image */}
+      <Image
+        src={order.src}
+        alt={order.alt}
+        width={100}
+        height={200}
+        className="rounded-lg object-cover w-20 h-20"
+      />
+
+      {/* Item Info */}
+      <div className="flex-1">
+        <p className="font-semibold">{order.name}</p>
+
+        {/* Customization */}
+        <div className="flex flex-wrap gap-2 mt-1 text-xs">
+          {order.size && (
+            <span className="bg-gray-100 px-2 py-1 rounded">{order.size}</span>
+          )}
+
+          {order.ice && <Badge>Ice {order.ice}</Badge>}
+
+          {order.sugar && (
+            <Badge variant="secondary">Sugar {order.sugar}</Badge>
+          )}
+        </div>
+
+        <p className="text-sm text-gray-500 mt-1">${order.price.toFixed(2)}</p>
+      </div>
+
+      {/* Quantity + Total */}
+      <div className="flex flex-col items-end gap-2">
+        {/* Quantity */}
+        <div className="flex items-center border rounded-lg overflow-hidden">
+          <button
+            onClick={() => decreaseQty(order.customKey)}
+            className="px-2 py-1 hover:bg-gray-100"
+          >
+            <MinusIcon size={16} />
+          </button>
+
+          <span className="px-3 text-sm">{order.qty}</span>
+
+          <button
+            onClick={() => increaseQty(order.customKey)}
+            className="px-2 py-1 hover:bg-gray-100"
+          >
+            <PlusIcon size={16} />
+          </button>
+        </div>
+
+        {/* Item Total */}
+        <div className="flex items-center gap-2">
+          <p className="font-semibold text-sm">${itemTotal.toFixed(2)}</p>
+
+          <button
+            onClick={() => removeItem(order.customKey)}
+            className="text-red-500 hover:text-red-700"
+          >
+            <Trash2Icon size={16} />
+          </button>
         </div>
       </div>
-
-      {/* Quantity Control */}
-      <div className="flex flex-1 items-center gap-3">
-        <button
-          onClick={() => decreaseQty(order.customKey)}
-          className="p-1 border rounded cursor-pointer"
-        >
-          <MinusIcon size={16} />
-        </button>
-
-        <span className="w-6 text-center">{order.qty}</span>
-
-        <button
-          onClick={() => increaseQty(order.customKey)}
-          className="p-1 border rounded cursor-pointer"
-        >
-          <PlusIcon size={16} />
-        </button>
-      </div>
-
-      {/* Remove */}
-      <button
-        onClick={() => removeItem(order.customKey)}
-        className="text-red-500 hover:text-red-700 pr-3 cursor-pointer"
-      >
-        <Trash2Icon size={20} />
-      </button>
     </div>
   );
 };

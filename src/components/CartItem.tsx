@@ -1,38 +1,66 @@
-import { useCart } from '@/contexts/CartContext';
+'use client';
 
-export default function CartItem() {
-  const { cart, removeItem, clearCart } = useCart();
+import Image from 'next/image';
+import { Badge } from './ui/badge';
 
-  const total = cart.reduce(
-    (acc, item) =>
-      acc + parseFloat(item.price.toString().replace('$', '')) * item.qty,
-    0,
-  );
+interface CartItemProps {
+  item: {
+    name: string;
+    price: number;
+    qty: number;
+    src?: string;
+    ice?: string;
+    sugar?: string;
+    size?: string;
+  };
+}
+
+export const CartItem = ({ item }: CartItemProps) => {
+  const total = item.price * item.qty;
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold">Your Cart</h2>
-      {cart.length === 0 && <p>Cart is empty</p>}
-      {cart.map((item) => (
-        <div key={item.id} className="flex justify-between py-2">
-          <span>
-            {item.name} x {item.qty}
-          </span>
-          <span>{item.price}</span>
-          <button onClick={() => removeItem(item.customKey)}>Remove</button>
+    <div className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 border rounded-2xl bg-white shadow-md hover:shadow-lg transition relative">
+      {/* Image */}
+      {item.src && (
+        <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden">
+          <Image src={item.src} alt={item.name} fill className="object-cover" />
         </div>
-      ))}
-      {cart.length > 0 && (
-        <>
-          <p className="font-bold mt-2">Total: ${total.toFixed(2)}</p>
-          <button
-            onClick={clearCart}
-            className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
-          >
-            Clear Cart
-          </button>
-        </>
       )}
+
+      {/* Info */}
+      <div className="flex-1 flex flex-col justify-between w-full">
+        <div>
+          <p className="font-bold text-lg">{item.name}</p>
+
+          <div className="flex flex-wrap gap-2 mt-2">
+            {item.size && (
+              <Badge className="bg-gray-100 text-gray-800">{item.size}</Badge>
+            )}
+            {item.ice && (
+              <Badge className="bg-blue-100 text-blue-700">
+                Ice {item.ice}
+              </Badge>
+            )}
+            {item.sugar && (
+              <Badge className="bg-yellow-100 text-yellow-800">
+                Sugar {item.sugar}
+              </Badge>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center mt-3 md:mt-0">
+          <p className="text-gray-600 font-medium">Qty: {item.qty}</p>
+          <p className="text-gray-800 font-semibold text-lg">
+            ${total.toFixed(2)}
+          </p>
+        </div>
+      </div>
+
+      {/* Optional creative icon / receipt accent */}
+      <div className="absolute top-2 right-2 text-gray-300 text-xs uppercase tracking-widest">
+        Coffee
+      </div>
     </div>
   );
-}
+};
