@@ -55,7 +55,7 @@ export default function CheckoutPage() {
         <section className="space-y-6">
           <div className="relative h-60 md:h-64 rounded-lg overflow-hidden shadow-md">
             <Image
-              src="/coffee/piqsels.com-id-jxnjtdd.jpg"
+              src="/coffee/checkout.jpg"
               alt="menu hero"
               fill
               className="object-cover brightness-75"
