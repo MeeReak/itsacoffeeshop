@@ -19,14 +19,15 @@ type CartItem = {
   coffeeLevel: string;
   note?: string;
   qty: number;
+  customKey: string;
 };
 
 type CartContextType = {
   cart: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (id: number) => void;
-  increaseQty: (id: number) => void;
-  decreaseQty: (id: number) => void;
+  removeItem: (id: string) => void;
+  increaseQty: (id: string) => void;
+  decreaseQty: (id: string) => void;
   clearCart: () => void;
 };
 
@@ -40,45 +41,45 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return stored ? JSON.parse(stored) : [];
   });
 
+  console.log('this is', cart);
+
   // Save cart
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addItem = (item: CartItem) => {
+  const addItem = (item: Omit<CartItem, 'customKey'>) => {
+    const customKey = `${item.id}-${item.sugar}-${item.ice}-${item.coffeeLevel}-${item.note || ''}`;
+
     setCart((prev) => {
-      const exists = prev.find(
-        (i) =>
-          i.id === item.id &&
-          i.sugar === item.sugar &&
-          i.ice === item.ice &&
-          i.coffeeLevel === item.coffeeLevel,
-      );
+      const exists = prev.find((i) => i.customKey === customKey);
 
       if (exists) {
         return prev.map((i) =>
-          i === exists ? { ...i, qty: i.qty + item.qty } : i,
+          i.customKey === customKey ? { ...i, qty: i.qty + item.qty } : i,
         );
       }
 
-      return [...prev, item];
+      return [...prev, { ...item, customKey }];
     });
   };
 
-  const removeItem = (id: number) => {
-    setCart((prev) => prev.filter((i) => i.id !== id));
+  const removeItem = (customKey: string) => {
+    setCart((prev) => prev.filter((i) => i.customKey !== customKey));
   };
 
-  const increaseQty = (id: number) => {
+  const increaseQty = (customKey: string) => {
     setCart((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i)),
+      prev.map((i) =>
+        i.customKey === customKey ? { ...i, qty: i.qty + 1 } : i,
+      ),
     );
   };
 
-  const decreaseQty = (id: number) => {
+  const decreaseQty = (customKey: string) => {
     setCart((prev) =>
       prev
-        .map((i) => (i.id === id ? { ...i, qty: i.qty - 1 } : i))
+        .map((i) => (i.customKey === customKey ? { ...i, qty: i.qty - 1 } : i))
         .filter((i) => i.qty > 0),
     );
   };

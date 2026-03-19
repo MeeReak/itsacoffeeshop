@@ -10,17 +10,13 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import QRCode from 'react-qr-code';
-
+import { KHQRCard } from './KHQRCard';
 interface QrDialogProps {
   qrUrl?: string; // QR image URL
   state?: 'loading' | 'success' | 'error' | 'idle';
 }
 
-export const QrDialog: React.FC<QrDialogProps> = ({
-  qrUrl,
-  state = 'idle',
-}) => {
+export const QrDialog: React.FC<QrDialogProps> = ({ state = 'idle' }) => {
   return (
     <Dialog>
       <DialogTrigger className="bg-black text-white px-5 py-3 rounded-lg hover:opacity-90 transition text-lg font-medium">
@@ -53,14 +49,7 @@ export const QrDialog: React.FC<QrDialogProps> = ({
           )}
 
           {/* QR Code */}
-          {state === 'idle' && (
-            <div className="bg-white p-4 mb-4 rounded-lg shadow-lg">
-              <QRCode
-                value={qrUrl || 'https://www.youtube.com/watch?v=oH80lpCW7uk'}
-                size={200}
-              />
-            </div>
-          )}
+          {state === 'idle' && <KHQRCard qrUrl="" currency="USD" />}
 
           {/* Description Text */}
           <p className={`text-center text-gray-600 text-sm md:text-base`}>

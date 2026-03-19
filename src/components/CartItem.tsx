@@ -19,7 +19,7 @@ export default function CartItem() {
             {item.name} x {item.qty}
           </span>
           <span>{item.price}</span>
-          <button onClick={() => removeItem(item.id)}>Remove</button>
+          <button onClick={() => removeItem(item.customKey)}>Remove</button>
         </div>
       ))}
       {cart.length > 0 && (

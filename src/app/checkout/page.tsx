@@ -2,6 +2,7 @@
 
 import { QrDialog } from '@/components/QrDialog';
 import { useCart } from '@/contexts/CartContext';
+import { useMounted } from '@/hooks/useMounted';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -13,35 +14,41 @@ export default function CheckoutPage() {
     table: '',
   });
 
-  const [qrState, setQrState] = useState<
-    'idle' | 'loading' | 'success' | 'error'
-  >('idle');
-  const [showQr, setShowQr] = useState(false);
+  // const [qrState, setQrState] = useState<
+  //   'idle' | 'loading' | 'success' | 'error'
+  // >('idle');
+  // const [showQr, setShowQr] = useState(false);
+  const mounted = useMounted();
 
+  if (!mounted) {
+    return (
+      <div className="p-10 text-center text-gray-400">Loading checkout...</div>
+    );
+  }
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-  const handlePlaceOrder = () => {
-    if (!customer.name || !customer.phone) {
-      alert('Please fill in your name and phone number.');
-      return;
-    }
+  // const handlePlaceOrder = () => {
+  //   if (!customer.name || !customer.phone) {
+  //     alert('Please fill in your name and phone number.');
+  //     return;
+  //   }
 
-    // Open modal & show loading
-    setShowQr(true);
-    setQrState('loading');
+  //   // Open modal & show loading
+  //   setShowQr(true);
+  //   setQrState('loading');
 
-    // Simulate API call to generate QR
-    setTimeout(() => {
-      // Simulate success 80% / error 20%
-      const success = Math.random() < 0.8;
+  //   // Simulate API call to generate QR
+  //   setTimeout(() => {
+  //     // Simulate success 80% / error 20%
+  //     const success = Math.random() < 0.8;
 
-      if (success) {
-        setQrState('idle'); // show QR
-      } else {
-        setQrState('error');
-      }
-    }, 1500);
-  };
+  //     if (success) {
+  //       setQrState('idle'); // show QR
+  //     } else {
+  //       setQrState('error');
+  //     }
+  //   }, 1500);
+  // };
 
   // const handlePaymentSuccess = () => {
   //   setQrState('success');
@@ -110,7 +117,7 @@ export default function CheckoutPage() {
           <div className="flex-1 overflow-y-auto space-y-3">
             {cart.map((item) => (
               <div
-                key={item.id}
+                key={item.customKey}
                 className="flex justify-between items-center border-b pb-2"
               >
                 <div className="flex items-center gap-3">

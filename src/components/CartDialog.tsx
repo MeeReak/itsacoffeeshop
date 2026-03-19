@@ -12,10 +12,12 @@ import { ShoppingCartIcon } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { OrderCard } from './OrderCard';
 import { useRouter } from 'next/navigation';
+import { useMounted } from '@/hooks/useMounted';
 
 export function CartDialog() {
   const { cart } = useCart();
   const router = useRouter();
+  const mounted = useMounted();
 
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
@@ -32,11 +34,11 @@ export function CartDialog() {
         <div className="fixed top-6 right-40 z-50 w-12 h-12 bg-[#f8f6f1] text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform cursor-pointer">
           <div className="relative">
             <ShoppingCartIcon />
-            {totalItems > 0 ? (
+            {mounted && totalItems > 0 && (
               <span className="absolute -top-2 -right-2 text-sm px-1.5 bg-[#f5dc50] rounded-full">
                 {totalItems}
               </span>
-            ) : null}
+            )}
           </div>
         </div>
       </DialogTrigger>
@@ -58,7 +60,7 @@ export function CartDialog() {
             {/* Cart Items */}
             <div className="space-y-4 max-h-100 overflow-y-auto pr-2">
               {cart.map((item) => (
-                <OrderCard key={item.id} order={item} />
+                <OrderCard key={item.customKey} order={item} />
               ))}
             </div>
 

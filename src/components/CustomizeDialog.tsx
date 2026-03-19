@@ -49,8 +49,8 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     },
   });
   const [open, setOpen] = useState(false);
-  const sugar = watch('sugar');
-  const ice = watch('ice');
+  // const sugar = watch('sugar');
+  // const ice = watch('ice');
   const coffeeLevel = watch('coffeeLevel');
   const qty = watch('qty');
 
@@ -58,6 +58,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   const sugarRef = useRef<HTMLDivElement>(null);
   const iceRef = useRef<HTMLDivElement>(null);
   const coffeeRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
 
   const [scrolled, setScrolled] = useState(false);
   const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
@@ -78,14 +79,18 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   const finalPrice = coffee.price + coffeePrice[selectedCoffeeLevel];
 
   const onSubmit = (data: CustomizeForm) => {
+    const customKey = `${coffee.id}-${data.sugar}-${data.ice}-${data.coffeeLevel}${-data.note || ''}`;
+
     addItem({
       id: coffee.id,
       name: coffee.name,
-      price: finalPrice,
+      price: Number(finalPrice.toFixed(2)),
       src: coffee.img,
       alt: coffee.name,
       ...data,
+      customKey,
     });
+
     reset();
     setOpen(false);
   };
@@ -145,16 +150,13 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
             />
           </div>
 
-          {/* Title */}
           <div className="mt-4">
             <h2 className="text-2xl font-bold mb-6">{coffee.name}</h2>
             <p className="text-lg font-bold mb-5">${coffee.price.toFixed(2)}</p>
             <p className="text-sm text-gray-500 mb-4">{coffee.desc}</p>
           </div>
           <hr />
-          {/* SIZE */}
 
-          {/* ICE */}
           <div ref={sugarRef} className="mt-5 scroll-mt-20">
             <Controller
               name="sugar"
@@ -182,7 +184,6 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
             />
           </div>
 
-          {/* SUGAR */}
           <div ref={iceRef} className="mt-5 scroll-mt-20">
             <Controller
               name="ice"
@@ -195,7 +196,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
                   value={field.value}
                   onChange={(val) => {
                     field.onChange(val);
-                    scrollTo(coffeeRef);
+                    scrollTo(footerRef);
                   }}
                   required
                   error={!!errors.ice}
@@ -226,7 +227,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
             />
           </div>
           {/* NOTE */}
-          <div className="mt-6">
+          <div>
             <p className="font-bold text-lg mb-1">Special Instructions</p>
 
             <p className="text-sm text-gray-500 mb-2">
@@ -241,7 +242,10 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
           </div>
 
           {/* FOOTER */}
-          <div className="flex items-center justify-between mt-6">
+          <div
+            ref={footerRef}
+            className="flex items-center justify-between mt-6"
+          >
             {/* Quantity */}
             <div className="flex items-center gap-3">
               <button
