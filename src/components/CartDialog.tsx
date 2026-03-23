@@ -28,19 +28,17 @@ export function CartDialog() {
     <Dialog>
       {/* Floating Cart Button */}
       <DialogTrigger>
-        {mounted && cart.length > 0 && (
-          <div className="fixed top-6 right-40 z-50 w-14 h-14 bg-[#f5dc50] rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition cursor-pointer">
-            <div className="relative text-black">
-              <ShoppingCartIcon />
+        <div className="z-50 p-2 bg-[#f5dc50] rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition cursor-pointer">
+          <div className="relative text-black">
+            <ShoppingCartIcon />
 
-              {mounted && totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 text-xs font-semibold px-1.5 py-0.5 bg-black text-white rounded-full">
-                  {totalItems}
-                </span>
-              )}
-            </div>
+            {mounted && totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 text-xs font-semibold px-1.5 py-0.5 bg-black text-white rounded-full">
+                {totalItems}
+              </span>
+            )}
           </div>
-        )}
+        </div>
       </DialogTrigger>
 
       {/* Cart Modal */}
@@ -72,13 +70,13 @@ export function CartDialog() {
               </div>
 
               <div className="flex gap-4">
-                <DialogClose className="flex-1 border rounded-xl py-3 hover:bg-gray-100 transition">
+                <DialogClose className="flex-1 border rounded-xl py-3 hover:bg-gray-100 transition cursor-pointer">
                   Continue
                 </DialogClose>
 
                 <DialogClose
                   onClick={() => router.push('/checkout')}
-                  className="flex-1 bg-[#f5dc50] rounded-xl py-3 font-semibold hover:bg-[#e8ce40] transition"
+                  className="flex-1 bg-[#f5dc50] rounded-xl py-3 font-semibold hover:bg-[#F3D839] transition  cursor-pointer"
                 >
                   Checkout
                 </DialogClose>

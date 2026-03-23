@@ -87,7 +87,7 @@ export default function MenuPage() {
   });
 
   return (
-    <main className="bg-[#f8f6f1] min-h-screen">
+    <main className="bg-[#f8f6f1] min-h-[110vh]">
       {/* HERO */}
       <section className="relative h-64 flex items-center justify-center text-center text-white mb-12">
         <Image
@@ -118,7 +118,7 @@ export default function MenuPage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full font-semibold transition ${
+              className={`cursor-pointer px-4 py-2 rounded-full font-semibold transition ${
                 selectedCategory === cat
                   ? 'bg-[#f5dc50] text-black'
                   : 'bg-white text-gray-700 shadow hover:shadow-md'

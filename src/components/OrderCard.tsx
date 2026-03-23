@@ -2,6 +2,7 @@ import { useCart } from '@/contexts/CartContext';
 import { MinusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from './ui/badge';
+import { useState } from 'react';
 
 interface OrderCardProp {
   order: {
@@ -21,7 +22,12 @@ interface OrderCardProp {
 
 export const OrderCard = ({ order }: OrderCardProp) => {
   const { decreaseQty, increaseQty, removeItem } = useCart();
+  const [scaleQty, setScaleQty] = useState(false);
 
+  const changeQty = () => {
+    setScaleQty(true);
+    setTimeout(() => setScaleQty(false), 100); // animation duration
+  };
   const itemTotal = order.price * order.qty;
 
   return (
@@ -56,21 +62,31 @@ export const OrderCard = ({ order }: OrderCardProp) => {
       </div>
 
       {/* Quantity + Total */}
-      <div className="flex flex-col items-end gap-2">
+      <div className="flex flex-col items-end gap-5">
         {/* Quantity */}
         <div className="flex items-center border rounded-lg overflow-hidden">
           <button
-            onClick={() => decreaseQty(order.customKey)}
-            className="px-2 py-1 hover:bg-gray-100"
+            onClick={() => {
+              changeQty();
+              decreaseQty(order.customKey);
+            }}
+            className="px-2 py-1 hover:bg-gray-100 cursor-pointer"
           >
             <MinusIcon size={16} />
           </button>
 
-          <span className="px-3 text-sm">{order.qty}</span>
+          <span
+            className={`min-w-6 text-center text-sm ${scaleQty ? 'scale-110' : 'scale-100'}`}
+          >
+            {order.qty}
+          </span>
 
           <button
-            onClick={() => increaseQty(order.customKey)}
-            className="px-2 py-1 hover:bg-gray-100"
+            onClick={() => {
+              changeQty();
+              increaseQty(order.customKey);
+            }}
+            className="px-2 py-1 hover:bg-gray-100  cursor-pointer"
           >
             <PlusIcon size={16} />
           </button>
@@ -82,7 +98,7 @@ export const OrderCard = ({ order }: OrderCardProp) => {
 
           <button
             onClick={() => removeItem(order.customKey)}
-            className="text-red-500 hover:text-red-700"
+            className="text-red-500 hover:text-red-700 cursor-pointer"
           >
             <Trash2Icon size={16} />
           </button>

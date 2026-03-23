@@ -43,7 +43,7 @@ export default function Footer() {
 
       {/* Bottom */}
       <div className="border-t border-gray-800 text-center text-gray-500 text-sm py-4">
-        © {new Date().getFullYear()} CoffeeHouse. All rights reserved.
+        © {new Date().getFullYear()} Itsacoffeeshop.
       </div>
     </footer>
   );

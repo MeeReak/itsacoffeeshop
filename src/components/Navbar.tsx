@@ -1,7 +1,6 @@
 'use client';
 
 import { ArrowLeftIcon } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -17,6 +16,8 @@ export default function Navbar() {
     { label: 'About', path: 'about' },
     { label: 'Contact', path: 'contact' },
   ];
+
+  console.log(open);
 
   const renderNavLinks = (mobile = false) =>
     navItems.map((item) => {
@@ -49,64 +50,41 @@ export default function Navbar() {
 
   return (
     <>
-      {pathname === '/' ? (
-        <nav className="backdrop-blur-2xl fixed w-full z-50">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            {/* Logo */}
-            <Link href={'/'} className="flex items-center gap-2">
-              <Image src="/coffee-logo.jpg" alt="logo" width={40} height={40} />
-              <span className="text-[#f5dc50] text-xl font-bold">
-                ItsCoffeeShop
-              </span>
-            </Link>
+      <nav
+        className={`fixed w-full z-50 ${pathname === '/' && 'backdrop-blur-2xl'}`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {pathname !== '/' && (
+              <button
+                onClick={() =>
+                  window.history.length > 1 ? router.back() : router.push('/')
+                }
+                className="p-2 rounded-full bg-[#f5dc50] hover:scale-110 transition cursor-pointer"
+              >
+                <ArrowLeftIcon />
+              </button>
+            )}
+            {pathname === '/' && (
+              <Link href="/" className="flex items-center gap-2">
+                <span className="text-[#f5dc50] text-xl font-bold">
+                  ItsCoffeeShop
+                </span>
+              </Link>
+            )}
+          </div>
 
-            {/* Desktop Menu */}
+          {/* Desktop Menu */}
+          {pathname === '/' && (
             <div className="hidden md:flex gap-8 text-sm">
               {renderNavLinks()}
             </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setOpen(!open)}
-              className="md:hidden text-[#f5dc50]"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {/* Mobile Menu */}
-          {open && (
-            <div className="md:hidden bg-[#060709] px-6 py-4 flex flex-col gap-4">
-              {renderNavLinks(true)}
-            </div>
           )}
-        </nav>
-      ) : (
-        <div className="fixed w-full z-50">
-          <button
-            onClick={() => router.back()}
-            className="cursor-pointer fixed top-6 left-40 z-50 w-12 h-12 bg-[#f5dc50]  text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
-          >
-              <ArrowLeftIcon />
-              
-          </button>
 
+          {/* Always show cart */}
           {pathname !== '/checkout' && <CartDialog />}
         </div>
-      )}
+      </nav>
     </>
   );
 }

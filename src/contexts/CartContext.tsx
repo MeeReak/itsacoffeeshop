@@ -41,8 +41,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return stored ? JSON.parse(stored) : [];
   });
 
-  console.log('this is', cart);
-
   // Save cart
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));

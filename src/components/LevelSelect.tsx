@@ -110,7 +110,7 @@ export const LevelSelect = <T extends string>({
                   handleSelect(opt.value);
                 }
               }}
-              className={`group flex justify-between items-center w-full rounded-md px-2 py-4 text-left transition-all duration-150
+              className={`group cursor-pointer flex justify-between items-center w-full rounded-md px-2 py-4 text-left transition-all duration-150
                 ${
                   required
                     ? done

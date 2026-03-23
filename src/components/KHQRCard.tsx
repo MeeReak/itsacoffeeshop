@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { QRCodeCanvas } from 'qrcode.react';
 
 interface KHQRCardProps {
@@ -30,15 +29,8 @@ export const KHQRCard: React.FC<KHQRCardProps> = ({
   return (
     <article className="border rounded-2xl shadow-lg overflow-hidden px-4">
       {/* Header with Shop Name */}
-      <header className="flex items-center justify-center gap-4 bg-[#f1dd68] -mx-4 py-2">
+      <header className="text-center bg-[#f1dd68] -mx-4 py-2">
         <h2 className="text-base font-bold">Itscoffeeshop</h2>
-        <Image
-          className="rounded-full"
-          src="/meeqr/qr-logo.png"
-          alt="Shop Logo"
-          width={30}
-          height={30}
-        />
       </header>
 
       {/* User / Amount Info */}
@@ -58,7 +50,10 @@ export const KHQRCard: React.FC<KHQRCardProps> = ({
       <section className="flex justify-center py-3">
         <figure className="relative">
           <QRCodeCanvas
-            value={qrUrl || 'https://www.youtube.com/watch?v=oH80lpCW7uk'}
+            value={
+              qrUrl ||
+              'https://www.youtube.com/watch?v=m_XUClQCOUc&list=RDm_XUClQCOUc&start_radio=1'
+            }
             size={200}
             level="H"
             includeMargin={true}

@@ -84,7 +84,7 @@ export default function Home() {
           <div className="flex gap-4 justify-center">
             <Link
               href="/menu"
-              className="bg-[#f5dc50] text-black px-6 py-3 rounded-lg font-semibold"
+              className="bg-[#f5dc50] hover:bg-[#F3D839] text-black px-6 py-3 rounded-lg font-semibold"
             >
               View Menu
             </Link>
@@ -196,7 +196,7 @@ export default function Home() {
         <p className="mb-8">Order your favorite drink and enjoy the moment.</p>
         <Link
           href="/order"
-          className="bg-[#060709] text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition"
+          className="bg-[#060709] text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
         >
           Order Now
         </Link>

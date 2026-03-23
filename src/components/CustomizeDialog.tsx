@@ -13,7 +13,8 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { LevelSelect } from './LevelSelect';
-import { Controller, FieldErrors, useForm } from 'react-hook-form';
+import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 
 interface CustomizeDialogProps {
   coffee: {
@@ -39,7 +40,6 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     control,
     handleSubmit,
     setValue,
-    watch,
     register,
     formState: { errors },
   } = useForm<CustomizeForm>({
@@ -49,11 +49,14 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     },
   });
   const [open, setOpen] = useState(false);
-  // const sugar = watch('sugar');
-  // const ice = watch('ice');
-  const coffeeLevel = watch('coffeeLevel');
-  const qty = watch('qty');
-
+  const [scaleQty, setScaleQty] = useState(false);
+  const sugar = useWatch({ control, name: 'sugar' });
+  const ice = useWatch({ control, name: 'ice' });
+  const coffeeLevel = useWatch({ control, name: 'coffeeLevel' });
+  const qty = useWatch({ control, name: 'qty' });
+  const isFormValid = sugar && ice && coffeeLevel;
+  const hasErrors = Object.keys(errors).length > 0;
+  const canAddToCart = isFormValid && !hasErrors;
   const { addItem } = useCart();
   const sugarRef = useRef<HTMLDivElement>(null);
   const iceRef = useRef<HTMLDivElement>(null);
@@ -74,6 +77,12 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     extra: 0.36,
   };
 
+  const changeQty = (newQty: number) => {
+    setValue('qty', newQty);
+    setScaleQty(true);
+    setTimeout(() => setScaleQty(false), 100); // animation duration
+  };
+
   const selectedCoffeeLevel = coffeeLevel ?? 'normal';
 
   const finalPrice = coffee.price + coffeePrice[selectedCoffeeLevel];
@@ -90,7 +99,6 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
       ...data,
       customKey,
     });
-
     reset();
     setOpen(false);
   };
@@ -114,7 +122,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Add Button */}
-      <DialogTrigger className="text-sm bg-[#060709] text-white px-3 py-1 rounded">
+      <DialogTrigger className="text-sm bg-[#060709] text-white px-3 py-1 rounded cursor-pointer">
         Add
       </DialogTrigger>
 
@@ -231,7 +239,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
             <p className="font-bold text-lg mb-1">Special Instructions</p>
 
             <p className="text-sm text-gray-500 mb-2">
-              Special requests are subject to the restaurant&apose;s approval.
+              Special requests are subject to the restaurant&apos;s approval.
             </p>
 
             <textarea
@@ -244,24 +252,31 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
           {/* FOOTER */}
           <div
             ref={footerRef}
-            className="flex items-center justify-between mt-6"
+            className="flex items-center justify-between mt-6 gap-5"
           >
             {/* Quantity */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-0.5">
               <button
-                onClick={() => setValue('qty', Math.max(1, qty - 1))}
-                className="border px-3 py-1 rounded"
+                onClick={() => changeQty(Math.max(1, qty - 1))}
+                className={`border rounded-full p-1 ${qty <= 1 ? 'cursor-not-allowed bg-[#f7f8f8] border-[#e6e7e8]' : 'cursor-pointer border-[#e8e9ea]'}`}
+                disabled={qty <= 1}
               >
-                -
+                <MinusIcon className={`${qty <= 1 && 'stroke-[#b8babc]'}`} />
               </button>
 
-              <span className="font-semibold">{qty}</span>
+              <span
+                className={`font-semibold transition-transform duration-150 min-w-5 text-center ${
+                  scaleQty ? 'scale-150' : 'scale-100'
+                }`}
+              >
+                {qty}
+              </span>
 
               <button
-                onClick={() => setValue('qty', qty + 1)}
-                className="border px-3 py-1 rounded"
+                onClick={() => changeQty(qty + 1)}
+                className="border cursor-pointer border-[#e8e9ea] rounded-full p-1"
               >
-                +
+                <PlusIcon />
               </button>
             </div>
 
@@ -273,10 +288,11 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
               Add
             </DialogClose> */}
             <button
-              className="bg-[#f5dc50] px-6 py-2 rounded font-semibold"
-              onClick={handleSubmit(onSubmit, onError)}
+              className={`py-2 w-full rounded-lg font-bold
+              ${!canAddToCart ? 'opacity-50 bg-[#b8babc] text-white' : 'bg-[#f5dc50] cursor-pointer '}`}
+              onClick={() => handleSubmit(onSubmit, onError)()}
             >
-              Add
+              {!canAddToCart ? 'Select Options' : 'Add to Cart'}
             </button>
           </div>
         </div>
