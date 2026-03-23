@@ -1,4 +1,4 @@
-export interface Coffee {
+export interface Product {
   id: number;
   name: string;
   displayOrder: number;

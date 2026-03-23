@@ -5,13 +5,15 @@ export const getAxios = () => {
   if (mAxios) return mAxios;
   else {
     const newAxios = axios.create({
-      baseURL: '/api/proxy',
+      baseURL: process.env.NEXT_PUBLIC_API_URL,
     });
+
     // newAxios.interceptors.request.use(ApiTokenInterceptor);
     newAxios.interceptors.response.use(
       (res) => res,
       (error) => {
         const status = error?.response?.status;
+        console.log(error);
         const isDev = process.env.NEXT_PUBLIC_IS_DEVELOPMENT === 'true';
 
         // If we are in development, we log the error instead of kicking the user out

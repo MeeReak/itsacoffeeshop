@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FeedBackCard } from '@/components/FeedBackCard';
+import { useGetProducts } from '@/hooks/useProduct';
 const coffees = [
   {
     id: 1,
@@ -63,6 +64,9 @@ const galleryImages = [
 ];
 
 export default function Home() {
+  const { data, isLoading, error } = useGetProducts();
+
+  console.log(data);
   return (
     <main className="bg-[#f8f6f1]">
       {/* HERO */}

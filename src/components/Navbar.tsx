@@ -17,8 +17,6 @@ export default function Navbar() {
     { label: 'Contact', path: 'contact' },
   ];
 
-  console.log(open);
-
   const renderNavLinks = (mobile = false) =>
     navItems.map((item) => {
       const href = `/${item.path.toLowerCase()}`;
