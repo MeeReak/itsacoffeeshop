@@ -15,13 +15,14 @@ import { OrderCard } from './OrderCard';
 import { useRouter } from 'next/navigation';
 import { useMounted } from '@/hooks/useMounted';
 
-export function CartDialog() {
+export default function CartDialog() {
   const { cart } = useCart();
   const router = useRouter();
   const mounted = useMounted();
 
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+  if (!mounted) return null; // Don't render on server
 
+  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   return (
@@ -31,8 +32,7 @@ export function CartDialog() {
         <div className="z-50 p-2 bg-[#f5dc50] rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition cursor-pointer">
           <div className="relative text-black">
             <ShoppingCartIcon />
-
-            {mounted && totalItems > 0 && (
+            {totalItems > 0 && (
               <span className="absolute -top-2 -right-2 text-xs font-semibold px-1.5 py-0.5 bg-black text-white rounded-full">
                 {totalItems}
               </span>
@@ -76,7 +76,7 @@ export function CartDialog() {
 
                 <DialogClose
                   onClick={() => router.push('/checkout')}
-                  className="flex-1 bg-[#f5dc50] rounded-xl py-3 font-semibold hover:bg-[#F3D839] transition  cursor-pointer"
+                  className="flex-1 bg-[#f5dc50] rounded-xl py-3 font-semibold hover:bg-[#F3D839] transition cursor-pointer"
                 >
                   Checkout
                 </DialogClose>

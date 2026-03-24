@@ -13,7 +13,6 @@ export const getAxios = () => {
       (res) => res,
       (error) => {
         const status = error?.response?.status;
-        console.log(error);
         const isDev = process.env.NEXT_PUBLIC_IS_DEVELOPMENT === 'true';
 
         // If we are in development, we log the error instead of kicking the user out

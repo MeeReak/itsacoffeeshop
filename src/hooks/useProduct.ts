@@ -1,11 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
-import { Product } from '@/type/product';
+import { Product, ProductListParams } from '@/type/product';
 import { productService } from '@/service/product.service';
-const useGetProducts = () => {
+
+const useGetProducts = ({
+  top = 10,
+  page = 1,
+  search = '',
+}: ProductListParams) => {
+  const skip = top * (page - 1);
+
   return useQuery<Product[]>({
-    queryKey: ['coffees'],
-    queryFn: productService.getProducts,
+    queryKey: ['coffees', 'list', { skip, top, search }],
+    queryFn: () => productService.getProducts({ skip, top, search }),
   });
 };
 
-export { useGetProducts };
+const useGetFeatureProducts = () => {
+  return useQuery<Product[]>({
+    queryKey: ['coffees', 'featured'],
+    queryFn: () => productService.getFeatureProducts(),
+  });
+};
+
+export { useGetProducts, useGetFeatureProducts };

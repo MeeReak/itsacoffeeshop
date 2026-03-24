@@ -15,15 +15,10 @@ import {
 import { LevelSelect } from './LevelSelect';
 import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { MinusIcon, PlusIcon } from 'lucide-react';
+import { Product } from '@/type/product';
 
 interface CustomizeDialogProps {
-  coffee: {
-    id: number;
-    img: string;
-    name: string;
-    desc: string;
-    price: number;
-  };
+  coffee: Product;
 }
 
 type CustomizeForm = {
@@ -94,7 +89,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
       id: coffee.id,
       name: coffee.name,
       price: Number(finalPrice.toFixed(2)),
-      src: coffee.img,
+      src: coffee.imageUrl,
       alt: coffee.name,
       ...data,
       customKey,
@@ -151,7 +146,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
           {/* Image */}
           <div className="relative h-72 w-full rounded-lg overflow-hidden mt-4">
             <Image
-              src={coffee.img}
+              src={coffee.imageUrl}
               alt={coffee.name}
               fill
               className="object-cover"
@@ -161,7 +156,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
           <div className="mt-4">
             <h2 className="text-2xl font-bold mb-6">{coffee.name}</h2>
             <p className="text-lg font-bold mb-5">${coffee.price.toFixed(2)}</p>
-            <p className="text-sm text-gray-500 mb-4">{coffee.desc}</p>
+            <p className="text-sm text-gray-500 mb-4">{coffee.description}</p>
           </div>
           <hr />
 

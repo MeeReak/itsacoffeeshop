@@ -5,37 +5,7 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FeedBackCard } from '@/components/FeedBackCard';
-import { useGetProducts } from '@/hooks/useProduct';
-const coffees = [
-  {
-    id: 1,
-    name: 'Iced Latte',
-    desc: 'Smooth espresso with chilled milk and ice',
-    price: 2.8,
-    img: '/coffee/cappuccino.jpg',
-  },
-  {
-    id: 2,
-    name: 'Caramel Latte',
-    desc: 'Rich espresso with creamy milk and caramel',
-    price: 3.2,
-    img: '/coffee/latte.jpg',
-  },
-  {
-    id: 3,
-    name: 'Matcha Latte',
-    desc: 'Premium matcha blended with fresh milk',
-    price: 3.5,
-    img: '/coffee/americano.jpg',
-  },
-  {
-    id: 4,
-    name: 'Chocolate Frappe',
-    desc: 'Icy chocolate drink topped with whipped cream',
-    price: 3.8,
-    img: '/coffee/mocha.jpg',
-  },
-];
+import { useGetFeatureProducts } from '@/hooks/useProduct';
 
 const testimonials = [
   {
@@ -64,9 +34,11 @@ const galleryImages = [
 ];
 
 export default function Home() {
-  const { data, isLoading, error } = useGetProducts();
+  const { data, isLoading, isError } = useGetFeatureProducts();
 
   console.log(data);
+  if (isLoading) return <p>Loading products...</p>;
+  if (isError) return <p>Failed to load products.</p>;
   return (
     <main className="bg-[#f8f6f1]">
       {/* HERO */}
@@ -108,8 +80,8 @@ export default function Home() {
           Featured Coffee
         </h2>
         <div className="grid md:grid-cols-4 gap-8">
-          {coffees.map((coffee) => (
-            <FeatureCard key={coffee.id} coffee={coffee} />
+          {data?.map((coffee) => (
+            <FeatureCard key={coffee.id} product={coffee} />
           ))}
         </div>
       </section>
@@ -199,7 +171,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold mb-6">Need a Coffee Break?</h2>
         <p className="mb-8">Order your favorite drink and enjoy the moment.</p>
         <Link
-          href="/order"
+          href="/menu"
           className="bg-[#060709] text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
         >
           Order Now

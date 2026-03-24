@@ -8,3 +8,9 @@ export interface Product {
   description: string;
   isFeatured: boolean;
 }
+
+export interface ProductListParams {
+  top: number;
+  page: number;
+  search?: string;
+}
