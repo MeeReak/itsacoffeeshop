@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import { FeatureCard } from '@/components/FeatureCard';
 import { FeedBackCard } from '@/components/FeedBackCard';
 import { useGetFeatureProducts } from '@/hooks/useProduct';
+import { FeatureCardSkeleton } from '@/components/FeatureCardSkeleton';
+import { Product } from '@/type/product';
 
 const testimonials = [
   {
@@ -36,9 +38,10 @@ const galleryImages = [
 export default function Home() {
   const { data, isLoading, isError } = useGetFeatureProducts();
 
-  console.log(data);
-  if (isLoading) return <p>Loading products...</p>;
   if (isError) return <p>Failed to load products.</p>;
+
+  const featureProduct: Product[] = data || [];
+
   return (
     <main className="bg-[#f8f6f1]">
       {/* HERO */}
@@ -80,9 +83,13 @@ export default function Home() {
           Featured Coffee
         </h2>
         <div className="grid md:grid-cols-4 gap-8">
-          {data?.map((coffee) => (
-            <FeatureCard key={coffee.id} product={coffee} />
-          ))}
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <FeatureCardSkeleton key={i} />
+              ))
+            : featureProduct.map((coffee: Product) => (
+                <FeatureCard key={coffee.id} product={coffee} />
+              ))}
         </div>
       </section>
 

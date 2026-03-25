@@ -3,44 +3,84 @@
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Image from 'next/image';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FeatureCard } from '@/components/FeatureCard';
 import { useGetProducts } from '@/hooks/useProduct';
+import { useGetCategories } from '@/hooks/useCategory';
 import { Product } from '@/type/product';
+import { FeatureCardSkeleton } from '@/components/FeatureCardSkeleton';
+import { CategorySkeleton } from '@/components/CategorySkeleton';
 
 interface FormValues {
   search: string;
   category: string;
 }
 
-const categories = ['All', 'Coffee', 'Tea', 'Frappes'];
-
 export default function MenuPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get initial category from URL query param
+  const initialCategory = searchParams.get('query') || 'All';
+
   const { control, watch, setValue } = useForm<FormValues>({
-    defaultValues: { search: '', category: 'All' },
+    defaultValues: { search: '', category: initialCategory },
   });
 
   const search = watch('search');
   const selectedCategory = watch('category');
 
-  // Debounce search
+  /* Debounce search */
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(search), 500);
     return () => clearTimeout(handler);
   }, [search]);
 
-  const { data, isLoading, isError } = useGetProducts({
-    top: 20,
+  /* Sync category with URL */
+  useEffect(() => {
+    if (selectedCategory === 'All') {
+      router.replace('/menu', { scroll: false });
+    } else {
+      router.replace(`/menu?query=${selectedCategory.toLocaleLowerCase()}`, {
+        scroll: false,
+      });
+    }
+  }, [selectedCategory, router]);
+
+  /* Fetch products */
+  const {
+    data: productsData,
+    isLoading: isProductsLoading,
+    isError: isProductsError,
+  } = useGetProducts({
+    top: 50,
     page: 1,
     search: debouncedSearch,
   });
 
-  const products: Product[] = data || [];
+  /* Fetch categories */
+  const {
+    data: categoriesData,
+    isLoading: isCategoriesLoading,
+    isError: isCategoriesError,
+  } = useGetCategories({
+    top: 50,
+    page: 1,
+  });
 
-  // Filter by category
+  const products: Product[] = productsData || [];
+  const categories = categoriesData || [];
+
+  /* Map categoryId -> name */
+  const categoryMap = new Map<number, string>();
+  categories.forEach((cat) => categoryMap.set(cat.id, cat.name));
+
+  /* Filter by category */
   const filteredProducts = products.filter((p) => {
     if (selectedCategory === 'All') return true;
-    return p.name === selectedCategory; // adjust per API
+    const productCategoryName = categoryMap.get(p.categoryId);
+    return productCategoryName === selectedCategory;
   });
 
   return (
@@ -60,7 +100,7 @@ export default function MenuPage() {
 
       {/* Search + Category Filter */}
       <section className="max-w-7xl mx-auto px-6 mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Search Input */}
+        {/* Search */}
         <Controller
           name="search"
           control={control}
@@ -68,46 +108,66 @@ export default function MenuPage() {
             <input
               {...field}
               type="text"
-              placeholder="Search coffee..."
+              placeholder="Search products..."
               className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#f5dc50]"
             />
           )}
         />
 
         {/* Category Filter */}
-        <Controller
-          name="category"
-          control={control}
-          render={({ field }) => (
-            <div className="flex gap-3 flex-wrap">
-              {categories.map((cat) => (
+        {isCategoriesLoading ? (
+          <CategorySkeleton />
+        ) : (
+          <Controller
+            name="category"
+            control={control}
+            render={({ field }) => (
+              <div className="flex gap-3 flex-wrap">
+                {/* All */}
                 <button
-                  key={cat}
                   type="button"
-                  onClick={() => field.onChange(cat)}
+                  onClick={() => field.onChange('All')}
                   className={`cursor-pointer px-4 py-2 rounded-full font-semibold transition ${
-                    field.value === cat
+                    field.value === 'All'
                       ? 'bg-[#f5dc50] text-black'
                       : 'bg-white text-gray-700 shadow hover:shadow-md'
                   }`}
                 >
-                  {cat}
+                  All
                 </button>
-              ))}
-            </div>
-          )}
-        />
+
+                {/* Dynamic categories */}
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => field.onChange(cat.name)}
+                    className={`cursor-pointer px-4 py-2 rounded-full font-semibold transition ${
+                      field.value === cat.name
+                        ? 'bg-[#f5dc50] text-black'
+                        : 'bg-white text-gray-700 shadow hover:shadow-md'
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          />
+        )}
       </section>
 
       {/* Product Grid */}
       <section className="max-w-7xl mx-auto px-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-20">
-        {isLoading ? (
-          <p className="text-center col-span-full text-gray-500">Loading...</p>
-        ) : isError ? (
+        {isProductsError || isCategoriesError ? (
           <p className="text-center col-span-full text-red-500">
-            Failed to load products.
+            Failed to load products or categories.
           </p>
-        ) : filteredProducts.length ? (
+        ) : isProductsLoading ? (
+          Array.from({ length: 8 }).map((_, i) => (
+            <FeatureCardSkeleton key={i} />
+          ))
+        ) : filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
             <FeatureCard key={product.id} product={product} />
           ))

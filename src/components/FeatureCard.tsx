@@ -9,7 +9,7 @@ interface FeatureCardProp {
 export const FeatureCard = ({ product }: FeatureCardProp) => {
   console.log(product.imageUrl);
   return (
-    <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+    <div className="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
       <div className="relative h-56">
         <Image
           src={product.imageUrl}

@@ -107,7 +107,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    if (e.currentTarget.scrollTop > 100) {
+    if (e.currentTarget.scrollTop > 300) {
       setScrolled(true);
     } else {
       setScrolled(false);
@@ -132,12 +132,12 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
         >
           {/* Sticky Header */}
           <DialogHeader
-            className={`sticky top-0 z-100 transition-all -mx-5 px-5 bg-white border border-bottom-1 ${
-              scrolled ? 'py-3 shadow-md' : 'hidden'
+            className={`sticky -top-1 z-100 transition-all -mx-5 px-5 bg-white border border-bottom-1 ${
+              scrolled ? 'py-5 shadow-md' : 'hidden'
             }`}
           >
             {scrolled && (
-              <DialogTitle className="text-lg font-bold">
+              <DialogTitle className="text-2xl font-bold">
                 {coffee.name}
               </DialogTitle>
             )}
@@ -154,9 +154,9 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
           </div>
 
           <div className="mt-4">
-            <h2 className="text-2xl font-bold mb-6">{coffee.name}</h2>
-            <p className="text-lg font-bold mb-5">${coffee.price.toFixed(2)}</p>
-            <p className="text-sm text-gray-500 mb-4">{coffee.description}</p>
+            <h2 className="text-3xl font-bold mb-6">{coffee.name}</h2>
+            <p className="text-xl font-bold mb-5">${coffee.price.toFixed(2)}</p>
+            <p className="text-base text-gray-500 mb-4">{coffee.description}</p>
           </div>
           <hr />
 

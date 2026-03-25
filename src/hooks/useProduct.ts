@@ -10,14 +10,15 @@ const useGetProducts = ({
   const skip = top * (page - 1);
 
   return useQuery<Product[]>({
-    queryKey: ['coffees', 'list', { skip, top, search }],
+    queryKey: ['products', 'list', { skip, top, search }],
+    retryDelay: 5000,
     queryFn: () => productService.getProducts({ skip, top, search }),
   });
 };
 
 const useGetFeatureProducts = () => {
   return useQuery<Product[]>({
-    queryKey: ['coffees', 'featured'],
+    queryKey: ['products', 'featured'],
     queryFn: () => productService.getFeatureProducts(),
   });
 };
