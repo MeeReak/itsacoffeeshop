@@ -117,7 +117,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Add Button */}
-      <DialogTrigger className="text-sm bg-[#060709] text-white px-3 py-1 rounded cursor-pointer">
+      <DialogTrigger className="text-sm bg-[#f5dc50] text-while font-semibold px-3 py-1 rounded cursor-pointer">
         Add
       </DialogTrigger>
 

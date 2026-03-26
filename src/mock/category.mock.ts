@@ -15,7 +15,7 @@ const categories: Category[] = [
   },
   {
     id: 5,
-    name: 'Snack',
+    name: 'Pastry',
     displayOrder: 3,
     isActive: true,
   },

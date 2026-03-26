@@ -7,7 +7,6 @@ interface FeatureCardProp {
 }
 
 export const FeatureCard = ({ product }: FeatureCardProp) => {
-  console.log(product.imageUrl);
   return (
     <div className="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
       <div className="relative h-56">
@@ -15,6 +14,7 @@ export const FeatureCard = ({ product }: FeatureCardProp) => {
           src={product.imageUrl}
           alt={product.name}
           fill
+          sizes="20"
           className="object-cover"
         />
       </div>
@@ -24,7 +24,7 @@ export const FeatureCard = ({ product }: FeatureCardProp) => {
           {product.description}
         </p>
         <div className="flex justify-between items-center mt-4">
-          <span className="font-bold text-[#f5dc50]">{product.price}</span>
+          <span className="font-bold text-black">$ {product.price}</span>
           <CustomizeDialog coffee={product} />
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm, Controller, useFormState } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FeatureCard } from '@/components/FeatureCard';
@@ -9,7 +9,7 @@ import { FeatureCardSkeleton } from '@/components/FeatureCardSkeleton';
 import { CategorySkeleton } from '@/components/CategorySkeleton';
 import { useGetProducts } from '@/hooks/useProduct';
 import { useGetCategories } from '@/hooks/useCategory';
-import { Product } from '@/type/product';
+import { ProductPagination } from '../ProductPagination';
 
 interface FormValues {
   search: string;
@@ -20,40 +20,48 @@ export default function Menu() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Initial category from URL query
   const initialCategory = searchParams.get('query') || 'All';
 
-  const { control } = useForm<FormValues>({
-    defaultValues: { search: '', category: initialCategory },
+  const [page, setPage] = useState(1);
+
+  const { control, watch, setValue } = useForm<FormValues>({
+    defaultValues: {
+      search: '',
+      category: initialCategory,
+    },
   });
 
-  // Use form state instead of watch() to avoid warnings
-  const { errors, dirtyFields, isSubmitting } = useFormState({ control });
-  const [formValues, setFormValues] = useState({
-    search: '',
-    category: initialCategory,
-  });
+  const search = watch('search');
+  const category = watch('category');
 
-  // Debounced search state
-  const [debouncedSearch, setDebouncedSearch] = useState(formValues.search);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+
+  // Debounce search
   useEffect(() => {
-    const handler = setTimeout(
-      () => setDebouncedSearch(formValues.search),
-      500,
-    );
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
     return () => clearTimeout(handler);
-  }, [formValues.search]);
+  }, [search]);
+
+  // Reset page when searching
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
   // Sync category with URL
   useEffect(() => {
-    if (formValues.category === 'All') {
+    if (category === 'All') {
       router.replace('/menu', { scroll: false });
     } else {
-      router.replace(`/menu?query=${formValues.category.toLowerCase()}`, {
+      router.replace(`/menu?query=${category.toLowerCase()}`, {
         scroll: false,
       });
     }
-  }, [formValues.category, router]);
+
+    setPage(1);
+  }, [category, router]);
 
   // Fetch products
   const {
@@ -61,7 +69,7 @@ export default function Menu() {
     isLoading: isProductsLoading,
     isError: isProductsError,
   } = useGetProducts({
-    top: 50,
+    top: 100,
     page: 1,
     search: debouncedSearch,
   });
@@ -72,23 +80,30 @@ export default function Menu() {
     isLoading: isCategoriesLoading,
     isError: isCategoriesError,
   } = useGetCategories({
-    top: 50,
+    top: 5,
     page: 1,
   });
 
-  const products: Product[] = productsData || [];
+  const products = productsData?.value || [];
   const categories = categoriesData || [];
 
-  // Map categoryId -> name
+  // Map categoryId → category name
   const categoryMap = new Map<number, string>();
   categories.forEach((cat) => categoryMap.set(cat.id, cat.name));
 
-  // Filter products by selected category
+  // Filter by category
   const filteredProducts = products.filter((p) => {
-    if (formValues.category === 'All') return true;
-    const productCategoryName = categoryMap.get(p.categoryId);
-    return productCategoryName === formValues.category;
+    if (category.toLowerCase() === 'all') return true;
+
+    const productCategoryName = categoryMap.get(p.categoryId) ?? '';
+
+    return productCategoryName.toLowerCase() === category.toLowerCase();
   });
+
+  // Pagination AFTER filtering
+  const paginatedProducts = filteredProducts.slice((page - 1) * 8, page * 8);
+
+  const totalPages = Math.ceil(filteredProducts.length / 8);
 
   return (
     <main className="bg-[#f8f6f1] min-h-[110vh]">
@@ -105,9 +120,9 @@ export default function Menu() {
         </h1>
       </section>
 
-      {/* Search + Category Filter */}
+      {/* Search + Category */}
       <section className="max-w-7xl mx-auto px-6 mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Search Input */}
+        {/* Search */}
         <Controller
           name="search"
           control={control}
@@ -116,28 +131,21 @@ export default function Menu() {
               {...field}
               type="text"
               placeholder="Search products..."
-              value={formValues.search}
-              onChange={(e) =>
-                setFormValues((prev) => ({ ...prev, search: e.target.value }))
-              }
-              className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#f5dc50]"
+              className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:border-[#f5dc50] focus:outline-none focus:ring-1 focus:ring-[#f5dc50]"
             />
           )}
         />
 
-        {/* Category Filter */}
+        {/* Categories */}
         {isCategoriesLoading ? (
           <CategorySkeleton />
         ) : (
           <div className="flex gap-3 flex-wrap">
-            {/* All Button */}
             <button
               type="button"
-              onClick={() =>
-                setFormValues((prev) => ({ ...prev, category: 'All' }))
-              }
+              onClick={() => setValue('category', 'All')}
               className={`cursor-pointer px-4 py-2 rounded-full font-semibold transition ${
-                formValues.category === 'All'
+                category === 'All'
                   ? 'bg-[#f5dc50] text-black'
                   : 'bg-white text-gray-700 shadow hover:shadow-md'
               }`}
@@ -145,16 +153,13 @@ export default function Menu() {
               All
             </button>
 
-            {/* Dynamic category buttons */}
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
-                onClick={() =>
-                  setFormValues((prev) => ({ ...prev, category: cat.name }))
-                }
+                onClick={() => setValue('category', cat.name)}
                 className={`cursor-pointer px-4 py-2 rounded-full font-semibold transition ${
-                  formValues.category === cat.name
+                  category.toLowerCase() === cat.name.toLowerCase()
                     ? 'bg-[#f5dc50] text-black'
                     : 'bg-white text-gray-700 shadow hover:shadow-md'
                 }`}
@@ -166,7 +171,7 @@ export default function Menu() {
         )}
       </section>
 
-      {/* Product Grid */}
+      {/* Products */}
       <section className="max-w-7xl mx-auto px-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-20">
         {isProductsError || isCategoriesError ? (
           <p className="text-center col-span-full text-red-500">
@@ -176,8 +181,8 @@ export default function Menu() {
           Array.from({ length: 8 }).map((_, i) => (
             <FeatureCardSkeleton key={i} />
           ))
-        ) : filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
+        ) : paginatedProducts.length > 0 ? (
+          paginatedProducts.map((product) => (
             <FeatureCard key={product.id} product={product} />
           ))
         ) : (
@@ -186,6 +191,17 @@ export default function Menu() {
           </p>
         )}
       </section>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <section className="max-w-7xl mx-auto pb-20 flex justify-center">
+          <ProductPagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </section>
+      )}
     </main>
   );
 }
