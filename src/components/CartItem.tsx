@@ -2,55 +2,53 @@
 
 import Image from 'next/image';
 import { Badge } from './ui/badge';
+import { orderItem } from '@/hooks/useOrder';
 
 interface CartItemProps {
-  item: {
-    name: string;
-    price: number;
-    qty: number;
-    src?: string;
-    ice?: string;
-    sugar?: string;
-    size?: string;
-  };
+  item: orderItem;
 }
 
 export const CartItem = ({ item }: CartItemProps) => {
-  const total = item.price * item.qty;
+  const total = item.price * item.quantity;
 
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 border rounded-2xl bg-white shadow-md hover:shadow-lg transition relative">
       {/* Image */}
-      {item.src && (
+      {item.productDetails.imageUrl && (
         <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden">
-          <Image src={item.src} alt={item.name} fill className="object-cover" />
+          <Image
+            src={item.productDetails.imageUrl}
+            alt={item.productName}
+            fill
+            className="object-cover"
+          />
         </div>
       )}
 
       {/* Info */}
       <div className="flex-1 flex flex-col justify-between w-full">
         <div>
-          <p className="font-bold text-lg">{item.name}</p>
+          <p className="font-bold text-lg">{item.productName}</p>
 
           <div className="flex flex-wrap gap-2 mt-2">
             {item.size && (
               <Badge className="bg-gray-100 text-gray-800">{item.size}</Badge>
             )}
-            {item.ice && (
+            {/* {item.ice && (
               <Badge className="bg-blue-100 text-blue-700">
                 Ice {item.ice}
               </Badge>
-            )}
-            {item.sugar && (
+            )} */}
+            {/* {item.sugar && (
               <Badge className="bg-yellow-100 text-yellow-800">
                 Sugar {item.sugar}
               </Badge>
-            )}
+            )} */}
           </div>
         </div>
 
         <div className="flex justify-between items-center mt-3 md:mt-0">
-          <p className="text-gray-600 font-medium">Qty: {item.qty}</p>
+          <p className="text-gray-600 font-medium">Qty: {item.quantity}</p>
           <p className="text-gray-800 font-semibold text-lg">
             ${total.toFixed(2)}
           </p>

@@ -81,7 +81,7 @@ export default function Navbar() {
         )}
 
         {/* Always show cart */}
-        {pathname !== '/checkout' && <CartDialog />}
+        {!pathname.startsWith('/checkout') && <CartDialog />}
       </div>
     </nav>
   );

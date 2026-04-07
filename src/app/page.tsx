@@ -68,7 +68,7 @@ export default function Home() {
               View Menu
             </Link>
             <Link
-              href="/order"
+              href="/menu"
               className="border border-white px-6 py-3 rounded-lg hover:bg-white hover:text-black transition"
             >
               Order Now

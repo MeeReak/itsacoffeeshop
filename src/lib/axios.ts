@@ -1,44 +1,43 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosError } from 'axios';
 
 export let mAxios: AxiosInstance;
+
 export const getAxios = () => {
   if (mAxios) return mAxios;
-  else {
-    const newAxios = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_URL,
-    });
 
-    // newAxios.interceptors.request.use(ApiTokenInterceptor);
-    newAxios.interceptors.response.use(
-      (res) => res,
-      (error) => {
-        const status = error?.response?.status;
+  const newAxios = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
+  });
+
+  newAxios.interceptors.response.use(
+    (res) => res,
+    (error) => {
+      if (axios.isAxiosError(error)) {
+        // ✅ Use axios.isAxiosError
+        const status = error.response?.status;
         const isDev = process.env.NEXT_PUBLIC_IS_DEVELOPMENT === 'true';
 
-        // If we are in development, we log the error instead of kicking the user out
         if (isDev) {
           console.warn(
-            `[Axios Interceptor] Blocked redirect for status ${status} in development mode.`,
+            `[Axios Interceptor] Status ${status}`,
+            error.response?.data,
           );
           return Promise.reject(error);
         }
 
-        switch (status) {
-          case 401:
-            window.location.href = '/no-access';
-            break;
-          case 403:
-            window.location.href = '/no-permission';
-            break;
-          case 404:
-            window.location.href = '/not-found';
-            break;
-        }
+        // Redirect only for auth / permission issues
+        if (status === 401) window.location.href = '/no-access';
+        if (status === 403) window.location.href = '/no-permission';
 
+        // Let other errors (like 404 or validation errors) pass to the caller
         return Promise.reject(error);
-      },
-    );
-    mAxios = newAxios;
-    return mAxios;
-  }
+      }
+
+      // Non-Axios errors (rare)
+      return Promise.reject(error);
+    },
+  );
+
+  mAxios = newAxios;
+  return mAxios;
 };

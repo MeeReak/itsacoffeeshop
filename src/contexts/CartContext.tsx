@@ -47,7 +47,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cart]);
 
   const addItem = (item: Omit<CartItem, 'customKey'>) => {
-    const customKey = `${item.id}-${item.sugar}-${item.ice}-${item.coffeeLevel}-${item.note || ''}`;
+    const customKey = crypto.randomUUID();
 
     setCart((prev) => {
       const exists = prev.find((i) => i.customKey === customKey);

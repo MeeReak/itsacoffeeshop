@@ -22,9 +22,9 @@ interface CustomizeDialogProps {
 }
 
 type CustomizeForm = {
-  sugar: 'no' | 'less' | 'normal' | 'more';
-  ice: 'no' | 'less' | 'normal' | 'more' | 'separate';
-  coffeeLevel: 'less' | 'normal' | 'extra';
+  sugar: '1' | '2' | '3' | '4';
+  ice: '1' | '2' | '3' | '4' | '5';
+  coffeeLevel: '1' | '2' | '3';
   note: string;
   qty: number;
 };
@@ -39,7 +39,7 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     formState: { errors },
   } = useForm<CustomizeForm>({
     defaultValues: {
-      coffeeLevel: 'normal',
+      coffeeLevel: '2',
       qty: 1,
     },
   });
@@ -67,9 +67,9 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   };
 
   const coffeePrice = {
-    less: 0,
-    normal: 0,
-    extra: 0.36,
+    '1': 0,
+    '2': 0,
+    '3': 0.36,
   };
 
   const changeQty = (newQty: number) => {
@@ -78,13 +78,13 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     setTimeout(() => setScaleQty(false), 100); // animation duration
   };
 
-  const selectedCoffeeLevel = coffeeLevel ?? 'normal';
-
+  const selectedCoffeeLevel = coffeeLevel ?? '2';
   const finalPrice = coffee.price + coffeePrice[selectedCoffeeLevel];
 
   const onSubmit = (data: CustomizeForm) => {
-    const customKey = `${coffee.id}-${data.sugar}-${data.ice}-${data.coffeeLevel}${-data.note || ''}`;
+    const customKey = crypto.randomUUID();
 
+    console.log(data);
     addItem({
       id: coffee.id,
       name: coffee.name,
@@ -117,12 +117,12 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Add Button */}
-      <DialogTrigger className="text-sm bg-[#f5dc50] text-while font-semibold px-3 py-1 rounded cursor-pointer">
+      <DialogTrigger className="text-sm bg-[#f5dc50] text-while font-semibold px-3 py-1 rounded cursor-pointer transform hover:scale-105 transition-all">
         Add
       </DialogTrigger>
 
       <DialogContent className="max-w-md p-0 overflow-hidden">
-        <DialogClose className="absolute top-3 right-4 z-101 bg-white/80 backdrop-blur border rounded-full px-2 py-1 shadow cursor-pointer duration-300 ease-in-out transform hover:scale-125">
+        <DialogClose className="absolute top-3 right-4 z-101 bg-white/80 backdrop-blur border rounded-full px-2 py-1 shadow cursor-pointer ease-in-out transform hover:scale-125">
           ✕
         </DialogClose>
         {/* Scrollable Content */}
@@ -177,10 +177,10 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
                   required
                   error={!!errors.sugar}
                   options={[
-                    { label: 'No Sweet', value: 'no' },
-                    { label: 'Less Sweet', value: 'less' },
-                    { label: 'Normal Sweet', value: 'normal' },
-                    { label: 'More Sweet', value: 'more' },
+                    { label: 'No Sweet', value: '1' },
+                    { label: 'Less Sweet', value: '2' },
+                    { label: 'Normal Sweet', value: '3' },
+                    { label: 'More Sweet', value: '4' },
                   ]}
                 />
               )}
@@ -204,11 +204,11 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
                   required
                   error={!!errors.ice}
                   options={[
-                    { label: 'No Ice', value: 'no' },
-                    { label: 'Less Ice', value: 'less' },
-                    { label: 'Normal Ice', value: 'normal' },
-                    { label: 'More Ice', value: 'more' },
-                    { label: 'Ice Separate', value: 'separate' },
+                    { label: 'No Ice', value: '1' },
+                    { label: 'Less Ice', value: '2' },
+                    { label: 'Normal Ice', value: '3' },
+                    { label: 'More Ice', value: '4' },
+                    { label: 'Ice Separate', value: '5' },
                   ]}
                 />
               )}
@@ -221,14 +221,15 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
               subTitle="Select 1"
               value={coffeeLevel}
               onChange={(val) =>
-                setValue('coffeeLevel', val as 'less' | 'normal' | 'extra')
+                setValue('coffeeLevel', val as '1' | '2' | '3')
               }
               options={[
-                { label: 'Less Coffee', value: 'less' },
-                { label: 'Extra Shot', priceLabel: 0.36, value: 'extra' },
+                { label: 'Less Coffee', value: '1' },
+                { label: 'Extra Shot', priceLabel: 0.36, value: '2' },
               ]}
             />
           </div>
+
           {/* NOTE */}
           <div>
             <p className="font-bold text-lg mb-1">Special Instructions</p>

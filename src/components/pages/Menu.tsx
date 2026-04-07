@@ -108,20 +108,20 @@ export default function Menu() {
   return (
     <main className="bg-[#f8f6f1] min-h-[110vh]">
       {/* HERO */}
-      <section className="relative h-64 flex items-center justify-center text-center text-white mb-12">
+      <section className="relative h-64 flex items-center justify-center text-center text-white mb-10">
         <Image
           src="/coffee/menu-coffee.jpg"
           alt="menu hero"
           fill
           className="absolute inset-0 w-full h-full object-cover brightness-75"
         />
-        <h1 className="relative z-10 text-4xl md:text-5xl font-bold text-[#f5dc50]">
+        <h1 className="relative z-10 text-4xl md:text-5xl font-bold text-white">
           Our Menu
         </h1>
       </section>
 
       {/* Search + Category */}
-      <section className="max-w-7xl mx-auto px-6 mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
+      <section className="max-w-7xl mx-auto px-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Search */}
         <Controller
           name="search"

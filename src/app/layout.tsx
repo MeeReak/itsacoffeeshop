@@ -6,6 +6,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import { CartProvider } from '@/contexts/CartContext';
 import Navbar from '@/components/Navbar';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/Toaster';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -30,7 +31,7 @@ export default function RootLayout({
         <ReactQueryProvider>
           <CartProvider>
             <Navbar />
-            {children}
+            {children} <Toaster />
           </CartProvider>
         </ReactQueryProvider>
         <ScrollToTop />

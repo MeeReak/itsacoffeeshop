@@ -1,23 +1,35 @@
 'use client';
 
-import { useCart } from '@/contexts/CartContext';
-import { useMounted } from '@/hooks/useMounted';
+import { useGetOrderItemProductById } from '@/hooks/useOrder';
+import { CartItem } from '../CartItem';
+import { QrDialog } from '../QrDialog';
 import Image from 'next/image';
 import { useState } from 'react';
-import { CartItem } from '@/components/CartItem';
-import { QrDialog } from '@/components/QrDialog';
 
-export default function CheckoutPage() {
-  const { cart } = useCart();
+export const Checkout = ({ id }: { id: string }) => {
+  const {
+    data: order,
+    isLoading,
+    error,
+  } = useGetOrderItemProductById(Number(id));
+
+  // Always define hooks at the top
   const [customer, setCustomer] = useState({ name: '', phone: '', table: '' });
-  const mounted = useMounted();
 
-  if (!mounted)
+  if (isLoading)
+    return <div className="p-10 text-center">Loading order...</div>;
+  if (error)
     return (
-      <div className="p-10 text-center text-gray-400">Loading checkout...</div>
+      <div className="p-10 text-center text-red-500">
+        {(error as Error).message}
+      </div>
     );
+  if (!order) return <div className="p-10 text-center">Order not found</div>;
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const total = order.orderItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
 
   return (
     <div className="bg-[#f8f6f1] min-h-screen py-12 px-4 md:px-8">
@@ -31,7 +43,7 @@ export default function CheckoutPage() {
               fill
               className="object-cover brightness-75"
             />
-            <h1 className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-bold text-[#f5dc50]">
+            <h1 className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-bold text-white">
               Checkout
             </h1>
           </div>
@@ -48,7 +60,6 @@ export default function CheckoutPage() {
               }
               className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-[#f5dc50] outline-none"
             />
-
             <input
               type="tel"
               placeholder="Phone Number"
@@ -58,7 +69,6 @@ export default function CheckoutPage() {
               }
               className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-[#f5dc50] outline-none"
             />
-
             <input
               type="text"
               placeholder="Table Number / Pickup"
@@ -78,12 +88,12 @@ export default function CheckoutPage() {
         </section>
 
         {/* RIGHT: Order Summary */}
-        <section className="flex flex-col bg-white justify-between rounded-xl shadow-md p-6 ">
+        <section className="flex flex-col bg-white justify-between rounded-xl shadow-md p-6">
           <h2 className="text-2xl font-bold">Order Summary</h2>
 
           <div className="flex-1 overflow-y-auto space-y-3 max-h-[55vh] scrollbar-hide">
-            {cart.map((item) => (
-              <CartItem key={item.customKey} item={item} />
+            {order.orderItems.map((item) => (
+              <CartItem key={item.id} item={item} />
             ))}
           </div>
 
@@ -92,9 +102,9 @@ export default function CheckoutPage() {
             <span>${total.toFixed(2)}</span>
           </div>
 
-          <QrDialog />
+          <QrDialog orderNumber={order.number} />
         </section>
       </div>
     </div>
   );
-}
+};

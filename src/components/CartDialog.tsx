@@ -8,26 +8,146 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-
 import { ShoppingCartIcon } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { OrderCard } from './OrderCard';
 import { useRouter } from 'next/navigation';
 import { useMounted } from '@/hooks/useMounted';
+import {
+  OrderPayload,
+  useCreateOrder,
+  useGetOrderItemById,
+  useUpdateOrder,
+} from '@/hooks/useOrder';
+import { toast } from 'sonner';
+import { useState, useEffect, useMemo } from 'react';
 
 export default function CartDialog() {
-  const { cart } = useCart();
   const router = useRouter();
   const mounted = useMounted();
+  const { cart } = useCart();
 
-  if (!mounted) return null; // Don't render on server
+  const { mutate: createOrder, isPending: createPending } = useCreateOrder();
+  const { mutate: updateOrder, isPending: updatePending } = useUpdateOrder();
 
-  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [originalCartHash, setOriginalCartHash] = useState('');
+  const [isOriginalLoaded, setIsOriginalLoaded] = useState(false);
+
+  const { data } = useGetOrderItemById(Number(orderId));
+
+  const isPending = createPending || updatePending;
+
+  useEffect(() => {
+    const id = localStorage.getItem('orderId');
+    setOrderId(id);
+  }, []);
+
+  const generateCartHash = (items: any[]) => {
+    return items
+      .map(
+        (i) =>
+          `${i.productId}-${i.quantity}-${i.size}-${1}-${1}-2-${i.note ?? ''}-${i.number}`,
+      )
+
+      .sort()
+      .join('|');
+  };
+
+  // Load existing order
+  useEffect(() => {
+    if (!orderId) {
+      setIsOriginalLoaded(true);
+      return;
+    }
+
+    if (data) {
+      const normalized = data.orderItems.map((item: any) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        size: item.size,
+        note: item.note ?? '',
+        number: item.number,
+      }));
+
+      setOriginalCartHash(generateCartHash(normalized));
+    }
+
+    setIsOriginalLoaded(true);
+  }, [orderId, data]);
+
+  const totalItems = useMemo(
+    () => cart.reduce((sum, item) => sum + item.qty, 0),
+    [cart],
+  );
+
+  const totalPrice = useMemo(
+    () => cart.reduce((sum, item) => sum + item.price * item.qty, 0),
+    [cart],
+  );
+
+  const handleCheckout = () => {
+    if (!cart.length) {
+      toast.error('Cart is empty');
+      return;
+    }
+
+    const payload: OrderPayload = {
+      type: 1,
+      cashierId: 2,
+      orderItems: cart.map((item) => ({
+        productId: item.id,
+        quantity: item.qty,
+        size: 2,
+        note: item.note ?? '',
+        number: item.customKey,
+      })),
+    };
+
+    const cartHash = generateCartHash(payload.orderItems);
+    console.log(originalCartHash);
+    console.log(cartHash);
+    const cartChanged = cartHash !== originalCartHash;
+
+    // Update existing order
+    if (orderId && isOriginalLoaded) {
+      if (cartChanged) {
+        updateOrder(
+          { id: orderId, payload },
+          {
+            onSuccess: (data) => {
+              toast.success('Order updated successfully');
+              setOriginalCartHash(cartHash);
+              router.push(`/checkout/${data.id}`);
+            },
+            onError: (err: any) => toast.error(err.message),
+          },
+        );
+        return;
+      }
+
+      // No change
+      router.push(`/checkout/${orderId}`);
+      return;
+    }
+
+    // Create order
+    createOrder(payload, {
+      onSuccess: (data) => {
+        toast.success('Order created successfully');
+        localStorage.setItem('orderId', data.id.toString());
+        setOrderId(data.id.toString());
+        setOriginalCartHash(cartHash);
+        router.push(`/checkout/${data.id}`);
+      },
+      onError: (err: any) => toast.error(err.message),
+    });
+  };
+
+  if (!mounted) return null;
 
   return (
     <Dialog>
-      {/* Floating Cart Button */}
       <DialogTrigger>
         <div className="z-50 p-2 bg-[#f5dc50] rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition cursor-pointer">
           <div className="relative text-black">
@@ -41,7 +161,6 @@ export default function CartDialog() {
         </div>
       </DialogTrigger>
 
-      {/* Cart Modal */}
       <DialogContent className="max-w-lg p-6">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
@@ -55,14 +174,12 @@ export default function CartDialog() {
           </p>
         ) : (
           <>
-            {/* Items */}
             <div className="mt-4 space-y-4 max-h-100 overflow-y-auto pr-2">
               {cart.map((item) => (
                 <OrderCard key={item.customKey} order={item} />
               ))}
             </div>
 
-            {/* Footer */}
             <div className="border-t mt-6 pt-4 space-y-4">
               <div className="flex justify-between text-lg font-semibold">
                 <span>Subtotal</span>
@@ -70,15 +187,23 @@ export default function CartDialog() {
               </div>
 
               <div className="flex gap-4">
-                <DialogClose className="flex-1 border rounded-xl py-3 hover:bg-gray-100 transition cursor-pointer">
-                  Continue
+                <DialogClose
+                  disabled={isPending}
+                  className="flex-1 border rounded-xl py-3 hover:bg-gray-100 transition"
+                >
+                  Continue Shopping
                 </DialogClose>
 
                 <DialogClose
-                  onClick={() => router.push('/checkout')}
-                  className="flex-1 bg-[#f5dc50] rounded-xl py-3 font-semibold hover:bg-[#F3D839] transition cursor-pointer"
+                  onClick={handleCheckout}
+                  disabled={isPending || !isOriginalLoaded}
+                  className="flex-1 bg-[#f5dc50] rounded-xl py-3 font-semibold hover:bg-[#F3D839] transition disabled:opacity-50"
                 >
-                  Checkout
+                  {isPending
+                    ? 'Processing...'
+                    : orderId
+                      ? 'View Checkout'
+                      : 'Checkout'}
                 </DialogClose>
               </div>
             </div>
