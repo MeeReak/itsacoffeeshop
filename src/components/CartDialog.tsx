@@ -22,6 +22,17 @@ import {
 import { toast } from 'sonner';
 import { useState, useEffect, useMemo } from 'react';
 
+export type HashProp = {
+  productId: number;
+  quantity: number;
+  size: number;
+  sugar: number;
+  ice: number;
+  coffeeLevel: number;
+  number: string;
+  note?: string;
+};
+
 export default function CartDialog() {
   const router = useRouter();
   const mounted = useMounted();
@@ -39,11 +50,13 @@ export default function CartDialog() {
   const isPending = createPending || updatePending;
 
   useEffect(() => {
-    const id = localStorage.getItem('orderId');
-    setOrderId(id);
+    setTimeout(() => {
+      const id = localStorage.getItem('orderId');
+      setOrderId(id);
+    }, 0);
   }, []);
 
-  const generateCartHash = (items: any[]) => {
+  const generateCartHash = (items: HashProp[]) => {
     return items
       .map(
         (i) =>
@@ -56,24 +69,29 @@ export default function CartDialog() {
 
   // Load existing order
   useEffect(() => {
-    if (!orderId) {
-      setIsOriginalLoaded(true);
+    if (!orderId || !data) {
+      if (!orderId) setIsOriginalLoaded(true);
       return;
     }
 
-    if (data) {
-      const normalized = data.orderItems.map((item: any) => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        size: item.size,
-        note: item.note ?? '',
-        number: item.number,
-      }));
+    const normalized = data.orderItems.map((item: any) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      size: item.size,
+      note: item.note ?? '',
+      number: item.number,
+      sugar: item.sugar,
+      coffeeLevel: item.coffeeLevel,
+      ice: item.ice,
+    }));
 
-      setOriginalCartHash(generateCartHash(normalized));
-    }
+    const hash = generateCartHash(normalized);
 
-    setIsOriginalLoaded(true);
+    // Wrap state updates in setTimeout to avoid cascading renders
+    setTimeout(() => {
+      setOriginalCartHash(hash);
+      setIsOriginalLoaded(true);
+    });
   }, [orderId, data]);
 
   const totalItems = useMemo(
@@ -101,12 +119,13 @@ export default function CartDialog() {
         size: 2,
         note: item.note ?? '',
         number: item.customKey,
+        ice: item.ice,
+        sugar: item.sugar,
+        coffeeLevel: item.coffeeLevel,
       })),
     };
 
     const cartHash = generateCartHash(payload.orderItems);
-    console.log(originalCartHash);
-    console.log(cartHash);
     const cartChanged = cartHash !== originalCartHash;
 
     // Update existing order

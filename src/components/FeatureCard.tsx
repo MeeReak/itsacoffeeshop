@@ -1,12 +1,16 @@
 import Image from 'next/image';
 import { CustomizeDialog } from './CustomizeDialog';
 import { Product } from '@/type/product';
+import { LookupReadDto } from '@/hooks/useLookUp';
+import { CartItem } from '@/contexts/CartContext';
 
-interface FeatureCardProp {
+interface FeatureCardProps {
   product: Product;
+  lookUp?: LookupReadDto;
+  cart?: CartItem[];
 }
 
-export const FeatureCard = ({ product }: FeatureCardProp) => {
+export const FeatureCard = ({ product, lookUp, cart }: FeatureCardProps) => {
   return (
     <div className="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
       <div className="relative h-56">
@@ -25,7 +29,7 @@ export const FeatureCard = ({ product }: FeatureCardProp) => {
         </p>
         <div className="flex justify-between items-center mt-4">
           <span className="font-bold text-black">$ {product.price}</span>
-          <CustomizeDialog coffee={product} />
+          <CustomizeDialog cart={cart} coffee={product} lookUp={lookUp} />
         </div>
       </div>
     </div>

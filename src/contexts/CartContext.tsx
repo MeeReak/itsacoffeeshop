@@ -8,21 +8,23 @@ import {
   ReactNode,
 } from 'react';
 
-type CartItem = {
+export type CartItem = {
   id: number;
   name: string;
   price: number;
   src: string;
   alt: string;
-  sugar: string;
-  ice: string;
-  coffeeLevel: string;
+  sugar: number;
+  ice: number;
+  coffeeLevel: number;
   note?: string;
   qty: number;
   customKey: string;
+  size: number;
+  number: string;
 };
 
-type CartContextType = {
+export type CartContextType = {
   cart: CartItem[];
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
@@ -46,19 +48,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addItem = (item: Omit<CartItem, 'customKey'>) => {
-    const customKey = crypto.randomUUID();
-
+  const addItem = (newItem: CartItem) => {
     setCart((prev) => {
-      const exists = prev.find((i) => i.customKey === customKey);
+      const existing = prev.find(
+        (item) => item.customKey === newItem.customKey,
+      );
 
-      if (exists) {
-        return prev.map((i) =>
-          i.customKey === customKey ? { ...i, qty: i.qty + item.qty } : i,
+      if (existing) {
+        return prev.map((item) =>
+          item.customKey === newItem.customKey
+            ? { ...item, qty: item.qty + newItem.qty }
+            : item,
         );
       }
 
-      return [...prev, { ...item, customKey }];
+      return [...prev, newItem];
     });
   };
 

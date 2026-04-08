@@ -7,6 +7,10 @@ export interface Product {
   imageUrl: string;
   description: string;
   isFeatured: boolean;
+  size: number;
+  sugar: number;
+  ice: number;
+  coffeeLevel: number;
 }
 
 export interface ProductListParams {

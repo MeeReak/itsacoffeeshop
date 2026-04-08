@@ -13,10 +13,11 @@ interface OrderCardProp {
     name: string;
     price: number;
     qty: number;
-
+    number: string;
     ice?: string;
     sugar?: string;
     size?: string;
+    coffeeLevel?: string;
   };
 }
 

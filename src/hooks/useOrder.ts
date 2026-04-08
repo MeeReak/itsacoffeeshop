@@ -16,6 +16,9 @@ export type OrderPayload = {
     size: 1 | 2 | 3;
     note?: string;
     number: string;
+    ice: number;
+    sugar: number;
+    coffeeLevel: number;
   }[];
 };
 
@@ -75,6 +78,7 @@ export const useGetOrderItemById = (id: number) => {
         throw new Error('Something went wrong');
       }
     },
+    enabled: !!id,
   });
 };
 

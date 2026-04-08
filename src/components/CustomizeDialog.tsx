@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { useCart } from '@/contexts/CartContext';
+import { CartItem, useCart } from '@/contexts/CartContext';
 
 import {
   Dialog,
@@ -16,9 +16,13 @@ import { LevelSelect } from './LevelSelect';
 import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import { Product } from '@/type/product';
+import { LookupReadDto } from '@/hooks/useLookUp';
+import { createCartItemId } from '@/utils/PagingResponse';
 
 interface CustomizeDialogProps {
   coffee: Product;
+  lookUp?: LookupReadDto;
+  cart?: CartItem[];
 }
 
 type CustomizeForm = {
@@ -29,7 +33,11 @@ type CustomizeForm = {
   qty: number;
 };
 
-export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
+export const CustomizeDialog = ({
+  coffee,
+  lookUp,
+  cart,
+}: CustomizeDialogProps) => {
   const {
     reset,
     control,
@@ -47,8 +55,8 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
   const [scaleQty, setScaleQty] = useState(false);
   const sugar = useWatch({ control, name: 'sugar' });
   const ice = useWatch({ control, name: 'ice' });
-  const coffeeLevel = useWatch({ control, name: 'coffeeLevel' });
   const qty = useWatch({ control, name: 'qty' });
+  const coffeeLevel = useWatch({ control, name: 'coffeeLevel' });
   const isFormValid = sugar && ice && coffeeLevel;
   const hasErrors = Object.keys(errors).length > 0;
   const canAddToCart = isFormValid && !hasErrors;
@@ -66,11 +74,13 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     });
   };
 
-  const coffeePrice = {
-    '1': 0,
-    '2': 0,
-    '3': 0.36,
-  };
+  const selectedLevel = lookUp?.coffeeLevels.find(
+    (c) => c.id === Number(coffeeLevel),
+  );
+
+  const extraPrice = selectedLevel?.price ?? 0;
+
+  const finalPrice = coffee.price + extraPrice;
 
   const changeQty = (newQty: number) => {
     setValue('qty', newQty);
@@ -78,22 +88,32 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     setTimeout(() => setScaleQty(false), 100); // animation duration
   };
 
-  const selectedCoffeeLevel = coffeeLevel ?? '2';
-  const finalPrice = coffee.price + coffeePrice[selectedCoffeeLevel];
-
   const onSubmit = (data: CustomizeForm) => {
-    const customKey = crypto.randomUUID();
+    const customKey = createCartItemId(
+      coffee.id,
+      data.sugar,
+      data.ice,
+      data.coffeeLevel,
+      data.note,
+    );
 
-    console.log(data);
     addItem({
+      customKey,
       id: coffee.id,
       name: coffee.name,
       price: Number(finalPrice.toFixed(2)),
       src: coffee.imageUrl,
       alt: coffee.name,
-      ...data,
-      customKey,
+      sugar: Number(data.sugar),
+      ice: Number(data.ice),
+      coffeeLevel: Number(data.coffeeLevel),
+      note: data.note,
+      qty: data.qty,
+      size: coffee.size,
+      number: '',
+      // ...data,
     });
+
     reset();
     setOpen(false);
   };
@@ -114,11 +134,22 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
     }
   };
 
+  const existedCart = cart!
+    .filter((item) => item.id === coffee.id)
+    .reduce((sum, item) => sum + item.qty, 0);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {/* Add Button */}
-      <DialogTrigger className="text-sm bg-[#f5dc50] text-while font-semibold px-3 py-1 rounded cursor-pointer transform hover:scale-105 transition-all">
-        Add
+      {/* Add Button  */}
+      <DialogTrigger
+        className={`flex items-center justify-center w-8 h-8 rounded-full border font-semibold transition-all hover:scale-110
+  ${
+    existedCart > 0
+      ? 'bg-[#f5dc50] text-black border-[#f5dc50]'
+      : 'bg-white hover:bg-gray-100'
+  }`}
+      >
+        {existedCart > 0 ? existedCart : <PlusIcon size={16} />}
       </DialogTrigger>
 
       <DialogContent className="max-w-md p-0 overflow-hidden">
@@ -176,12 +207,12 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
                   }}
                   required
                   error={!!errors.sugar}
-                  options={[
-                    { label: 'No Sweet', value: '1' },
-                    { label: 'Less Sweet', value: '2' },
-                    { label: 'Normal Sweet', value: '3' },
-                    { label: 'More Sweet', value: '4' },
-                  ]}
+                  options={
+                    lookUp?.sugars?.map((s) => ({
+                      label: s.name,
+                      value: String(s.id),
+                    })) ?? []
+                  }
                 />
               )}
             />
@@ -203,13 +234,12 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
                   }}
                   required
                   error={!!errors.ice}
-                  options={[
-                    { label: 'No Ice', value: '1' },
-                    { label: 'Less Ice', value: '2' },
-                    { label: 'Normal Ice', value: '3' },
-                    { label: 'More Ice', value: '4' },
-                    { label: 'Ice Separate', value: '5' },
-                  ]}
+                  options={
+                    lookUp?.ices?.map((s) => ({
+                      label: s.name,
+                      value: String(s.id),
+                    })) ?? []
+                  }
                 />
               )}
             />
@@ -223,12 +253,42 @@ export const CustomizeDialog = ({ coffee }: CustomizeDialogProps) => {
               onChange={(val) =>
                 setValue('coffeeLevel', val as '1' | '2' | '3')
               }
-              options={[
-                { label: 'Less Coffee', value: '1' },
-                { label: 'Extra Shot', priceLabel: 0.36, value: '2' },
-              ]}
+              options={
+                lookUp?.coffeeLevels.map((level) => ({
+                  label: level.name,
+                  value: String(level.id),
+                  priceLabel: level.price,
+                })) ?? []
+              }
             />
           </div>
+
+          {/* <div ref={iceRef} className="mt-5 scroll-mt-20">
+            <Controller
+              name="ice"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <LevelSelect
+                  title="Ice Level"
+                  subTitle="Select 1"
+                  value={field.value}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    scrollTo(footerRef);
+                  }}
+                  required
+                  error={!!errors.ice}
+                  options={
+                    lookUp?.variations?.map((s) => ({
+                      label: s.name,
+                      value: String(s.id),
+                    })) ?? []
+                  }
+                />
+              )}
+            />
+          </div> */}
 
           {/* NOTE */}
           <div>

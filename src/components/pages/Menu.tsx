@@ -10,6 +10,8 @@ import { CategorySkeleton } from '@/components/CategorySkeleton';
 import { useGetProducts } from '@/hooks/useProduct';
 import { useGetCategories } from '@/hooks/useCategory';
 import { ProductPagination } from '../ProductPagination';
+import { useLookups } from '@/hooks/useLookUp';
+import { useCart } from '@/contexts/CartContext';
 
 interface FormValues {
   search: string;
@@ -105,10 +107,14 @@ export default function Menu() {
 
   const totalPages = Math.ceil(filteredProducts.length / 8);
 
+  const { data: lookUpData } = useLookups();
+
+  const { cart } = useCart();
+
   return (
     <main className="bg-[#f8f6f1] min-h-[110vh]">
       {/* HERO */}
-      <section className="relative h-64 flex items-center justify-center text-center text-white mb-10">
+      <section className="relative h-64 flex items-center justify-center text-center text-white mb-8">
         <Image
           src="/coffee/menu-coffee.jpg"
           alt="menu hero"
@@ -183,7 +189,12 @@ export default function Menu() {
           ))
         ) : paginatedProducts.length > 0 ? (
           paginatedProducts.map((product) => (
-            <FeatureCard key={product.id} product={product} />
+            <FeatureCard
+              cart={cart}
+              lookUp={lookUpData}
+              key={product.id}
+              product={product}
+            />
           ))
         ) : (
           <p className="text-center col-span-full text-gray-500">
