@@ -1,7 +1,3 @@
-export interface PagingResponse<T> {
-  totalCount: number;
-  value: T[];
-}
 export const createCartItemId = (
   id: number,
   sugar: string,

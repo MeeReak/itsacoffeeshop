@@ -1,5 +1,5 @@
 import { getAxios } from '@/lib/axios';
-import { Category } from '@/type/category';
+import { CategoryListResponse } from '@/types/api/category';
 
 export const getCategories = async ({
   skip,
@@ -9,7 +9,7 @@ export const getCategories = async ({
   skip: number;
   top: number;
   search: string;
-}): Promise<Category[]> => {
+}): Promise<CategoryListResponse> => {
   const axios = getAxios();
   const { data } = await axios.get('/categories?api-version=2026-01-01', {
     params: {
@@ -18,5 +18,5 @@ export const getCategories = async ({
       search,
     },
   });
-  return data.value;
+  return data;
 };

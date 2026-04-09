@@ -1,20 +1,22 @@
+import { PaginatedResponse } from './pagination';
+
 export interface Product {
   id: number;
   name: string;
   displayOrder: number;
   categoryId: number;
   price: number;
-  imageUrl: string;
   description: string;
+  imageUrl: string;
   isFeatured: boolean;
-  size: number;
-  sugar: number;
-  ice: number;
-  coffeeLevel: number;
+  createdAt: string;
 }
 
 export interface ProductListParams {
-  top: number;
-  page: number;
+  top?: number;
+  page?: number;
   search?: string;
+  categoryId?: number;
 }
+
+export type ProductListResponse = PaginatedResponse<Product>;

@@ -1,6 +1,5 @@
 import { getAxios } from '@/lib/axios';
-import { Product } from '@/type/product';
-import { PagingResponse } from '@/utils/PagingResponse';
+import { Product, ProductListResponse } from '@/types/api/product';
 
 const axios = getAxios();
 
@@ -14,7 +13,7 @@ export const getProducts = async ({
   top: number;
   search?: string;
   categoryId?: number;
-}): Promise<PagingResponse<Product>> => {
+}): Promise<ProductListResponse> => {
   const { data } = await axios.get('/products?api-version=2026-01-01', {
     params: { skip, top, search, categoryId },
   });

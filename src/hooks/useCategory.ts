@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Category, CategoryListParams } from '@/type/category';
+import { CategoryListParams, CategoryListResponse } from '@/types/api/category';
 import { categoryService } from '@/service/category.service';
 
 const useGetCategories = ({
@@ -9,9 +9,14 @@ const useGetCategories = ({
 }: CategoryListParams) => {
   const skip = top * (page - 1);
 
-  return useQuery<Category[]>({
-    queryKey: ['category', 'list', { skip, top, search }],
-    queryFn: () => categoryService.getCategories({ skip, top, search }),
+  return useQuery<CategoryListResponse>({
+    queryKey: ['categories', 'list', { skip, top, search }],
+    queryFn: () =>
+      categoryService.getCategories({
+        skip,
+        top,
+        search,
+      }) as Promise<CategoryListResponse>,
   });
 };
 

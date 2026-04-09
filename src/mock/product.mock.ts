@@ -1,5 +1,4 @@
-import { Product } from '@/type/product';
-import { PagingResponse } from '@/utils/PagingResponse';
+import { Product, ProductListResponse } from '@/types/api/product';
 
 const coffee: Product[] = [
   {
@@ -12,6 +11,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 1,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 11,
@@ -23,6 +23,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 2,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 12,
@@ -34,6 +35,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 3,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 13,
@@ -45,6 +47,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 4,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 14,
@@ -56,8 +59,8 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 5,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
-
   {
     id: 15,
     name: 'Iced Cappuccino',
@@ -68,6 +71,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 6,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 16,
@@ -79,6 +83,7 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 7,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 17,
@@ -90,6 +95,7 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 8,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 18,
@@ -101,6 +107,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 9,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 19,
@@ -112,6 +119,7 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 10,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 20,
@@ -123,6 +131,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 11,
     categoryId: 1,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 21,
@@ -134,6 +143,7 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 1,
     categoryId: 5,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 22,
@@ -145,6 +155,7 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 2,
     categoryId: 5,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 23,
@@ -156,6 +167,7 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 3,
     categoryId: 5,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 24,
@@ -167,6 +179,7 @@ const coffee: Product[] = [
     isFeatured: true,
     displayOrder: 4,
     categoryId: 5,
+    createdAt: new Date().toISOString(),
   },
   {
     id: 25,
@@ -178,6 +191,7 @@ const coffee: Product[] = [
     isFeatured: false,
     displayOrder: 5,
     categoryId: 5,
+    createdAt: new Date().toISOString(),
   },
 ];
 
@@ -189,7 +203,7 @@ export const getProducts = async ({
   skip: number;
   top: number;
   search: string;
-}): Promise<PagingResponse<Product>> => {
+}): Promise<ProductListResponse> => {
   let filtered = coffee;
 
   if (search) {
@@ -203,6 +217,7 @@ export const getProducts = async ({
   return Promise.resolve({
     totalCount: filtered.length,
     value: paginated,
+    nextLink: null,
   });
 };
 

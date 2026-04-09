@@ -1,3 +1,5 @@
+import { PaginatedResponse } from './pagination';
+
 export interface Category {
   id: number;
   name: string;
@@ -6,7 +8,9 @@ export interface Category {
 }
 
 export interface CategoryListParams {
-  top: number;
-  page: number;
+  top?: number;
+  page?: number;
   search?: string;
 }
+
+export type CategoryListResponse = PaginatedResponse<Category>;

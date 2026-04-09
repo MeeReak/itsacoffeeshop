@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Product } from '@/type/product';
+import { Product } from '@/types/api/product';
 import { mAxios } from '@/lib/axios';
 
 const useGetProducts = () => {

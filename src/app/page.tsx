@@ -7,7 +7,7 @@ import { FeatureCard } from '@/components/FeatureCard';
 import { FeedBackCard } from '@/components/FeedBackCard';
 import { useGetFeatureProducts } from '@/hooks/useProduct';
 import { FeatureCardSkeleton } from '@/components/FeatureCardSkeleton';
-import { Product } from '@/type/product';
+import { Product } from '@/types/api/product';
 
 const testimonials = [
   {

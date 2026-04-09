@@ -1,4 +1,4 @@
-import { Category } from '@/type/category';
+import { Category } from '@/types/api/category';
 
 const categories: Category[] = [
   {

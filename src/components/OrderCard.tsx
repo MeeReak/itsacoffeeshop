@@ -3,22 +3,10 @@ import { MinusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from './ui/badge';
 import { useState } from 'react';
+import { CartItem } from '@/types/ui/cart';
 
 interface OrderCardProp {
-  order: {
-    id: number;
-    customKey: string;
-    src: string;
-    alt: string;
-    name: string;
-    price: number;
-    qty: number;
-    number: string;
-    ice?: string;
-    sugar?: string;
-    size?: string;
-    coffeeLevel?: string;
-  };
+  order: CartItem;
 }
 
 export const OrderCard = ({ order }: OrderCardProp) => {
@@ -34,13 +22,14 @@ export const OrderCard = ({ order }: OrderCardProp) => {
   return (
     <div className="flex items-center gap-4 p-4 border rounded-xl bg-white shadow-sm hover:shadow-md transition">
       {/* Coffee Image */}
-      <Image
-        src={order.src}
-        alt={order.alt}
-        width={100}
-        height={200}
-        className="rounded-lg object-cover w-20 h-20"
-      />
+      <div className="relative w-20 h-20 shrink-0">
+        <Image
+          src={order.src}
+          alt={order.alt}
+          fill
+          className="rounded-lg object-cover"
+        />
+      </div>
 
       {/* Item Info */}
       <div className="flex-1">
@@ -49,7 +38,9 @@ export const OrderCard = ({ order }: OrderCardProp) => {
         {/* Customization */}
         <div className="flex flex-wrap gap-2 mt-1 text-xs">
           {order.size && (
-            <span className="bg-gray-100 px-2 py-1 rounded">{order.size}</span>
+            <span className="bg-gray-100 px-2 py-1 rounded">
+              {order.size === 1 ? 'Small' : order.size === 2 ? 'Medium' : 'Large'}
+            </span>
           )}
 
           {order.ice && <Badge>Ice {order.ice}</Badge>}

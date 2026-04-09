@@ -1,63 +1,14 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAxios } from '@/lib/axios';
+import {
+  Order,
+  OrderPayload,
+  OrderResponse,
+  UpdateOrder,
+} from '@/types/api/order';
 
-export type UpdateOrder = {
-  id: string;
-  payload: OrderPayload;
-};
-
-export type OrderPayload = {
-  type: 1 | 2;
-  cashierId: number;
-  orderItems: {
-    productId: number;
-    quantity: number;
-    size: 1 | 2 | 3;
-    note?: string;
-    number: string;
-    ice: number;
-    sugar: number;
-    coffeeLevel: number;
-  }[];
-};
-
-export type OrderResponse = {
-  id: number;
-  number: string;
-  total: number;
-};
-
-const axiosInstance = getAxios(); // this is your AxiosInstance
-
-export type productDetail = {
-  id: number;
-  productName: string;
-  price: number;
-  imageUrl: string;
-};
-
-export type orderItem = {
-  id: number;
-  productId: number;
-  productName: string;
-  price: number;
-  quantity: number;
-  size: number;
-  note: string;
-  productDetails: productDetail;
-};
-
-export type Order = {
-  id: number;
-  number: string;
-  type: 1 | 2;
-  status: number;
-  subTotal: number;
-  tax: number;
-  total: number;
-  orderItems: orderItem[];
-};
+const axiosInstance = getAxios();
 
 export const useGetOrderItemById = (id: number) => {
   return useQuery<OrderPayload>({

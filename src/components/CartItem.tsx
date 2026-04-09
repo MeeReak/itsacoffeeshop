@@ -2,10 +2,10 @@
 
 import Image from 'next/image';
 import { Badge } from './ui/badge';
-import { orderItem } from '@/hooks/useOrder';
+import { OrderItem } from '@/types/api/order';
 
 interface CartItemProps {
-  item: orderItem;
+  item: OrderItem;
 }
 
 export const CartItem = ({ item }: CartItemProps) => {
@@ -32,18 +32,10 @@ export const CartItem = ({ item }: CartItemProps) => {
 
           <div className="flex flex-wrap gap-2 mt-2">
             {item.size && (
-              <Badge className="bg-gray-100 text-gray-800">{item.size}</Badge>
+              <Badge className="bg-gray-100 text-gray-800">
+                {item.size === 1 ? 'Small' : item.size === 2 ? 'Medium' : 'Large'}
+              </Badge>
             )}
-            {/* {item.ice && (
-              <Badge className="bg-blue-100 text-blue-700">
-                Ice {item.ice}
-              </Badge>
-            )} */}
-            {/* {item.sugar && (
-              <Badge className="bg-yellow-100 text-yellow-800">
-                Sugar {item.sugar}
-              </Badge>
-            )} */}
           </div>
         </div>
 

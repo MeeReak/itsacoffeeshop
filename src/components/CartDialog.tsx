@@ -14,24 +14,13 @@ import { OrderCard } from './OrderCard';
 import { useRouter } from 'next/navigation';
 import { useMounted } from '@/hooks/useMounted';
 import {
-  OrderPayload,
   useCreateOrder,
   useGetOrderItemById,
   useUpdateOrder,
 } from '@/hooks/useOrder';
+import { OrderPayload, OrderPayloadItem } from '@/types/api/order';
 import { toast } from 'sonner';
 import { useState, useEffect, useMemo } from 'react';
-
-export type HashProp = {
-  productId: number;
-  quantity: number;
-  size: number;
-  sugar: number;
-  ice: number;
-  coffeeLevel: number;
-  number: string;
-  note?: string;
-};
 
 export default function CartDialog() {
   const router = useRouter();
@@ -56,13 +45,12 @@ export default function CartDialog() {
     }, 0);
   }, []);
 
-  const generateCartHash = (items: HashProp[]) => {
+  const generateCartHash = (items: OrderPayloadItem[]) => {
     return items
       .map(
         (i) =>
-          `${i.productId}-${i.quantity}-${i.size}-${1}-${1}-2-${i.note ?? ''}-${i.number}`,
+          `${i.productId}-${i.quantity}-${i.size}-${i.sugar}-${i.ice}-${i.coffeeLevel}-${i.note ?? ''}-${i.number}`,
       )
-
       .sort()
       .join('|');
   };
@@ -74,7 +62,7 @@ export default function CartDialog() {
       return;
     }
 
-    const normalized = data.orderItems.map((item: any) => ({
+    const normalized: OrderPayloadItem[] = data.orderItems.map((item: any) => ({
       productId: item.productId,
       quantity: item.quantity,
       size: item.size,
@@ -116,7 +104,7 @@ export default function CartDialog() {
       orderItems: cart.map((item) => ({
         productId: item.id,
         quantity: item.qty,
-        size: 2,
+        size: item.size as any,
         note: item.note ?? '',
         number: item.customKey,
         ice: item.ice,

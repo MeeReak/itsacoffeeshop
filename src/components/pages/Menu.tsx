@@ -87,11 +87,11 @@ export default function Menu() {
   });
 
   const products = productsData?.value || [];
-  const categories = categoriesData || [];
+  const categories = categoriesData?.value || [];
 
   // Map categoryId → category name
   const categoryMap = new Map<number, string>();
-  categories.forEach((cat) => categoryMap.set(cat.id, cat.name));
+  categories.forEach((cat: any) => categoryMap.set(cat.id, cat.name));
 
   // Filter by category
   const filteredProducts = products.filter((p) => {

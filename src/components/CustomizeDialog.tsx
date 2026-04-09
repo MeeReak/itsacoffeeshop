@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { CartItem, useCart } from '@/contexts/CartContext';
+import { CartItem } from '@/types/ui/cart';
+import { useCart } from '@/contexts/CartContext';
 
 import {
   Dialog,
@@ -15,9 +16,9 @@ import {
 import { LevelSelect } from './LevelSelect';
 import { Controller, FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { MinusIcon, PlusIcon } from 'lucide-react';
-import { Product } from '@/type/product';
+import { Product } from '@/types/api/product';
 import { LookupReadDto } from '@/hooks/useLookUp';
-import { createCartItemId } from '@/utils/PagingResponse';
+import { createCartItemId } from '@/utils/cart';
 
 interface CustomizeDialogProps {
   coffee: Product;
@@ -109,7 +110,7 @@ export const CustomizeDialog = ({
       coffeeLevel: Number(data.coffeeLevel),
       note: data.note,
       qty: data.qty,
-      size: coffee.size,
+      size: 1,
       number: '',
       // ...data,
     });
@@ -134,22 +135,23 @@ export const CustomizeDialog = ({
     }
   };
 
-  const existedCart = cart!
-    .filter((item) => item.id === coffee.id)
-    .reduce((sum, item) => sum + item.qty, 0);
+  const existedCart =
+    cart
+      ?.filter((item) => item.id === coffee.id)
+      .reduce((sum, item) => sum + item.qty, 0) ?? 0;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Add Button  */}
       <DialogTrigger
-        className={`flex items-center justify-center w-8 h-8 rounded-full border font-semibold transition-all hover:scale-110
+        className={`flex items-center justify-center w-8 h-8 rounded-full border font-semibold transition-all hover:scale-125
   ${
     existedCart > 0
       ? 'bg-[#f5dc50] text-black border-[#f5dc50]'
-      : 'bg-white hover:bg-gray-100'
+      : ''
   }`}
       >
-        {existedCart > 0 ? existedCart : <PlusIcon size={16} />}
+        {existedCart > 0 ? existedCart : <PlusIcon size={20} />}
       </DialogTrigger>
 
       <DialogContent className="max-w-md p-0 overflow-hidden">

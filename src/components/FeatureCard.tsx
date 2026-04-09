@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import { CustomizeDialog } from './CustomizeDialog';
-import { Product } from '@/type/product';
+import { Product } from '@/types/api/product';
 import { LookupReadDto } from '@/hooks/useLookUp';
-import { CartItem } from '@/contexts/CartContext';
+import { CartItem } from '@/types';
+// import { CartItem } from '@/contexts/CartContext';
 
 interface FeatureCardProps {
   product: Product;
