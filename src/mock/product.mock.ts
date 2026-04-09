@@ -4,7 +4,7 @@ const coffee: Product[] = [
   {
     id: 10,
     name: 'Iced Thnol Coffee',
-    price: 2.43,
+    price: 0.01,
     imageUrl: '/coffee/thnol-coffee.jpg',
     description:
       'Iced Thnol Coffee is an iced milk coffee and a Cambodian flavor, rich aroma, sweet and creamy taste, unforgettable taste',
@@ -16,7 +16,7 @@ const coffee: Product[] = [
   {
     id: 11,
     name: 'Iced Latte',
-    price: 2.43,
+    price: 0.01,
     imageUrl: '/coffee/ice-latte.jpg',
     description:
       'Iced Latte is a fresh milk coffee with a light, creamy coffee flavor and the aroma of coffee and fresh milk',
@@ -28,7 +28,7 @@ const coffee: Product[] = [
   {
     id: 12,
     name: 'Iced Americano',
-    price: 2.43,
+    price: 0.01,
     imageUrl: '/coffee/ice-americano.jpg',
     description:
       'Iced Americano is a black coffee with a strong coffee flavor and the aroma of coffee',
@@ -40,7 +40,7 @@ const coffee: Product[] = [
   {
     id: 13,
     name: 'Fresh Passion Juice',
-    price: 2.43,
+    price: 0.01,
     imageUrl: '/coffee/fresh-passio-juice.jpg',
     description:
       'Fresh Passion Juice has a sweet and sour taste and the aroma of fresh passion fruit',
@@ -52,7 +52,7 @@ const coffee: Product[] = [
   {
     id: 14,
     name: 'Coconut Cream Latte',
-    price: 2.43,
+    price: 0.01,
     imageUrl: '/coffee/coconut-cream-latte.jpg',
     description:
       'Coconut Cream Latte is a creamy coffee with fresh coconut water, a sweet taste, light coffee level, and the aroma of coffee and coconut',

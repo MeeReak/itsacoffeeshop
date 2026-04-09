@@ -2,7 +2,7 @@
 
 import { useGetOrderItemProductById } from '@/hooks/useOrder';
 import { CartItem } from '../CartItem';
-import { QrDialog } from '../QrDialog';
+import { PaymentModal } from '../PaymentModal';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -102,7 +102,7 @@ export const Checkout = ({ id }: { id: string }) => {
             <span>${total.toFixed(2)}</span>
           </div>
 
-          <QrDialog orderNumber={order.number} />
+          <PaymentModal orderId={order.id} orderNumber={order.number} totalAmount={total} />
         </section>
       </div>
     </div>
