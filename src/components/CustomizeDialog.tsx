@@ -145,11 +145,7 @@ export const CustomizeDialog = ({
       {/* Add Button  */}
       <DialogTrigger
         className={`flex items-center justify-center w-8 h-8 rounded-full border font-semibold transition-all hover:scale-125
-  ${
-    existedCart > 0
-      ? 'bg-[#f5dc50] text-black border-[#f5dc50]'
-      : ''
-  }`}
+  ${existedCart > 0 ? 'bg-[#f5dc50] text-black border-[#f5dc50]' : ''}`}
       >
         {existedCart > 0 ? existedCart : <PlusIcon size={20} />}
       </DialogTrigger>

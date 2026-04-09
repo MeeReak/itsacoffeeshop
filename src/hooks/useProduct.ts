@@ -16,7 +16,8 @@ const useGetProducts = ({
 
   return useQuery<ProductListResponse>({
     queryKey: ['products', 'list', { skip, top, search, categoryId }],
-    queryFn: () => productService.getProducts({ skip, top, search, categoryId }),
+    queryFn: () =>
+      productService.getProducts({ skip, top, search, categoryId }),
   });
 };
 

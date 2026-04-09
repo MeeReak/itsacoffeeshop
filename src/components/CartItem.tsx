@@ -33,7 +33,11 @@ export const CartItem = ({ item }: CartItemProps) => {
           <div className="flex flex-wrap gap-2 mt-2">
             {item.size && (
               <Badge className="bg-gray-100 text-gray-800">
-                {item.size === 1 ? 'Small' : item.size === 2 ? 'Medium' : 'Large'}
+                {item.size === 1
+                  ? 'Small'
+                  : item.size === 2
+                    ? 'Medium'
+                    : 'Large'}
               </Badge>
             )}
           </div>

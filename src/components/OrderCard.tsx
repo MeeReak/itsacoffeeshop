@@ -39,7 +39,11 @@ export const OrderCard = ({ order }: OrderCardProp) => {
         <div className="flex flex-wrap gap-2 mt-1 text-xs">
           {order.size && (
             <span className="bg-gray-100 px-2 py-1 rounded">
-              {order.size === 1 ? 'Small' : order.size === 2 ? 'Medium' : 'Large'}
+              {order.size === 1
+                ? 'Small'
+                : order.size === 2
+                  ? 'Medium'
+                  : 'Large'}
             </span>
           )}
 

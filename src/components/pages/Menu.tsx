@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FeatureCard } from '@/components/FeatureCard';
@@ -12,6 +12,7 @@ import { useGetCategories } from '@/hooks/useCategory';
 import { ProductPagination } from '../ProductPagination';
 import { useLookups } from '@/hooks/useLookUp';
 import { useCart } from '@/contexts/CartContext';
+import { Category } from '@/types';
 
 interface FormValues {
   search: string;
@@ -26,15 +27,15 @@ export default function Menu() {
 
   const [page, setPage] = useState(1);
 
-  const { control, watch, setValue } = useForm<FormValues>({
+  const { control, setValue } = useForm<FormValues>({
     defaultValues: {
       search: '',
       category: initialCategory,
     },
   });
 
-  const search = watch('search');
-  const category = watch('category');
+  const search = useWatch({ control, name: 'search' }) || '';
+  const category = useWatch({ control, name: 'category' }) || initialCategory;
 
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
@@ -49,7 +50,7 @@ export default function Menu() {
 
   // Reset page when searching
   useEffect(() => {
-    setPage(1);
+    setTimeout(() => setPage(1), 0);
   }, [debouncedSearch]);
 
   // Sync category with URL
@@ -62,7 +63,7 @@ export default function Menu() {
       });
     }
 
-    setPage(1);
+    setTimeout(() => setPage(1), 0);
   }, [category, router]);
 
   // Fetch products
@@ -91,7 +92,7 @@ export default function Menu() {
 
   // Map categoryId → category name
   const categoryMap = new Map<number, string>();
-  categories.forEach((cat: any) => categoryMap.set(cat.id, cat.name));
+  categories.forEach((cat: Category) => categoryMap.set(cat.id, cat.name));
 
   // Filter by category
   const filteredProducts = products.filter((p) => {

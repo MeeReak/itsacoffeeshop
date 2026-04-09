@@ -18,7 +18,7 @@ import {
   useGetOrderItemById,
   useUpdateOrder,
 } from '@/hooks/useOrder';
-import { OrderPayload, OrderPayloadItem } from '@/types/api/order';
+import { OrderPayload, OrderPayloadItem } from '@/types';
 import { toast } from 'sonner';
 import { useState, useEffect, useMemo } from 'react';
 
@@ -58,20 +58,24 @@ export default function CartDialog() {
   // Load existing order
   useEffect(() => {
     if (!orderId || !data) {
-      if (!orderId) setIsOriginalLoaded(true);
+      if (!orderId) {
+        setTimeout(() => setIsOriginalLoaded(true), 0);
+      }
       return;
     }
 
-    const normalized: OrderPayloadItem[] = data.orderItems.map((item: any) => ({
-      productId: item.productId,
-      quantity: item.quantity,
-      size: item.size,
-      note: item.note ?? '',
-      number: item.number,
-      sugar: item.sugar,
-      coffeeLevel: item.coffeeLevel,
-      ice: item.ice,
-    }));
+    const normalized: OrderPayloadItem[] = data.orderItems.map(
+      (item: OrderPayloadItem) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        size: item.size,
+        note: item.note ?? '',
+        number: item.number,
+        sugar: item.sugar,
+        coffeeLevel: item.coffeeLevel,
+        ice: item.ice,
+      }),
+    );
 
     const hash = generateCartHash(normalized);
 
@@ -104,7 +108,7 @@ export default function CartDialog() {
       orderItems: cart.map((item) => ({
         productId: item.id,
         quantity: item.qty,
-        size: item.size as any,
+        size: item.size as 1 | 2 | 3,
         note: item.note ?? '',
         number: item.customKey,
         ice: item.ice,
@@ -127,7 +131,7 @@ export default function CartDialog() {
               setOriginalCartHash(cartHash);
               router.push(`/checkout/${data.id}`);
             },
-            onError: (err: any) => toast.error(err.message),
+            onError: (err: Error) => toast.error(err.message),
           },
         );
         return;
@@ -147,7 +151,7 @@ export default function CartDialog() {
         setOriginalCartHash(cartHash);
         router.push(`/checkout/${data.id}`);
       },
-      onError: (err: any) => toast.error(err.message),
+      onError: (err: Error) => toast.error(err.message),
     });
   };
 

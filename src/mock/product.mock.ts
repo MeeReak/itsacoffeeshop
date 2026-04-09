@@ -199,17 +199,23 @@ export const getProducts = async ({
   skip,
   top,
   search,
+  categoryId,
 }: {
   skip: number;
   top: number;
-  search: string;
+  search?: string;
+  categoryId?: number;
 }): Promise<ProductListResponse> => {
   let filtered = coffee;
 
   if (search) {
-    filtered = coffee.filter((p) =>
+    filtered = filtered.filter((p) =>
       p.name.toLowerCase().includes(search.toLowerCase()),
     );
+  }
+
+  if (categoryId) {
+    filtered = filtered.filter((p) => p.categoryId === categoryId);
   }
 
   const paginated = filtered.slice(skip, skip + top);

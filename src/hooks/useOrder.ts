@@ -6,7 +6,8 @@ import {
   OrderPayload,
   OrderResponse,
   UpdateOrder,
-} from '@/types/api/order';
+  ApiErrorResponse,
+} from '@/types';
 
 const axiosInstance = getAxios();
 
@@ -21,7 +22,7 @@ export const useGetOrderItemById = (id: number) => {
         return data;
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          const apiError = (err.response?.data as any)?.error;
+          const apiError = (err.response?.data as ApiErrorResponse)?.error;
           const message =
             apiError?.details?.[0]?.message || apiError?.message || err.message;
           throw new Error(message);
@@ -44,7 +45,7 @@ export const useGetOrderItemProductById = (id: number) => {
         return data;
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          const apiError = (err.response?.data as any)?.error;
+          const apiError = (err.response?.data as ApiErrorResponse)?.error;
           const message =
             apiError?.details?.[0]?.message || apiError?.message || err.message;
           throw new Error(message);
@@ -68,7 +69,7 @@ export const useCreateOrder = () => {
         return data;
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          const apiError = (err.response?.data as any)?.error;
+          const apiError = (err.response?.data as ApiErrorResponse)?.error;
 
           const message =
             apiError?.details?.[0]?.message || apiError?.message || err.message;
@@ -98,7 +99,7 @@ export const useUpdateOrder = () => {
         return data;
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          const apiError = (err.response?.data as any)?.error;
+          const apiError = (err.response?.data as ApiErrorResponse)?.error;
 
           const message =
             apiError?.details?.[0]?.message || apiError?.message || err.message;

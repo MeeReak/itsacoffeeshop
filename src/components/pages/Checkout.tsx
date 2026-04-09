@@ -5,7 +5,6 @@ import { CartItem } from '../CartItem';
 import { QrDialog } from '../QrDialog';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Order } from '@/types/api/order';
 
 export const Checkout = ({ id }: { id: string }) => {
   const {

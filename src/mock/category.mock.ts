@@ -1,4 +1,4 @@
-import { Category } from '@/types/api/category';
+import { Category, CategoryListResponse } from '@/types/api/category';
 
 const categories: Category[] = [
   {
@@ -21,6 +21,28 @@ const categories: Category[] = [
   },
 ];
 
-export const getCategories = async (): Promise<Category[]> => {
-  return Promise.resolve(categories);
+export const getCategories = async ({
+  skip,
+  top,
+  search,
+}: {
+  skip: number;
+  top: number;
+  search: string;
+}): Promise<CategoryListResponse> => {
+  let filtered = categories;
+
+  if (search) {
+    filtered = categories.filter((c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }
+
+  const paginated = filtered.slice(skip, skip + top);
+
+  return Promise.resolve({
+    totalCount: filtered.length,
+    value: paginated,
+    nextLink: null,
+  });
 };

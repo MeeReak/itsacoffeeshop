@@ -2,15 +2,13 @@
 
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
 
 // Client-only CartDialog to avoid hydration errors
 const CartDialog = dynamic(() => import('./CartDialog'), { ssr: false });
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -21,31 +19,22 @@ export default function Navbar() {
     { label: 'Contact', path: 'contact' },
   ];
 
-  const renderNavLinks = (mobile = false) =>
+  const renderNavLinks = () =>
     navItems.map((item) => {
       const href = `/${item.path.toLowerCase()}`;
       const isActive = pathname === href;
-      const baseClass = mobile
-        ? 'text-white hover:text-[#f5dc50] transition'
-        : `relative group text-base font-medium transition ${
-            isActive ? 'text-[#f5dc50]' : 'text-black'
-          }`;
+      const baseClass = `relative group text-base font-medium transition ${
+        isActive ? 'text-[#f5dc50]' : 'text-black'
+      }`;
 
       return (
-        <Link
-          key={item.label}
-          href={href}
-          className={baseClass}
-          onClick={() => mobile && setOpen(false)}
-        >
+        <Link key={item.label} href={href} className={baseClass}>
           {item.label}
-          {!mobile && (
-            <span
-              className={`absolute left-0 -bottom-1 h-0.5 bg-[#f5dc50] transition-all ${
-                isActive ? 'w-full' : 'w-0 group-hover:w-full'
-              }`}
-            />
-          )}
+          <span
+            className={`absolute left-0 -bottom-1 h-0.5 bg-[#f5dc50] transition-all ${
+              isActive ? 'w-full' : 'w-0 group-hover:w-full'
+            }`}
+          />
         </Link>
       );
     });
