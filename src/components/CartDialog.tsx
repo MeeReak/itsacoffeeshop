@@ -18,9 +18,10 @@ import {
   useGetOrderItemById,
   useUpdateOrder,
 } from '@/hooks/useOrder';
-import { OrderPayload, OrderPayloadItem } from '@/types';
+import { OrderItem, OrderPayloadItem } from '@/types';
 import { toast } from 'sonner';
 import { useState, useEffect, useMemo } from 'react';
+import { buildOrderPayload, generateCartHash } from '@/utils/cart';
 
 export default function CartDialog() {
   const router = useRouter();
@@ -45,16 +46,6 @@ export default function CartDialog() {
     }, 0);
   }, []);
 
-  const generateCartHash = (items: OrderPayloadItem[]) => {
-    return items
-      .map(
-        (i) =>
-          `${i.productId}-${i.quantity}-${i.size}-${i.sugar}-${i.ice}-${i.coffeeLevel}-${i.note ?? ''}-${i.number}`,
-      )
-      .sort()
-      .join('|');
-  };
-
   // Load existing order
   useEffect(() => {
     if (!orderId || !data) {
@@ -65,10 +56,10 @@ export default function CartDialog() {
     }
 
     const normalized: OrderPayloadItem[] = data.orderItems.map(
-      (item: OrderPayloadItem) => ({
+      (item: OrderItem) => ({
         productId: item.productId,
         quantity: item.quantity,
-        size: item.size,
+        size: item.size as 1 | 2 | 3,
         note: item.note ?? '',
         number: item.number,
         sugar: item.sugar,
@@ -102,21 +93,7 @@ export default function CartDialog() {
       return;
     }
 
-    const payload: OrderPayload = {
-      type: 1,
-      cashierId: 2,
-      orderItems: cart.map((item) => ({
-        productId: item.id,
-        quantity: item.qty,
-        size: item.size as 1 | 2 | 3,
-        note: item.note ?? '',
-        number: item.customKey,
-        ice: item.ice,
-        sugar: item.sugar,
-        coffeeLevel: item.coffeeLevel,
-      })),
-    };
-
+    const payload = buildOrderPayload(cart);
     const cartHash = generateCartHash(payload.orderItems);
     const cartChanged = cartHash !== originalCartHash;
 

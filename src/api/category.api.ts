@@ -11,7 +11,7 @@ export const getCategories = async ({
   search: string;
 }): Promise<CategoryListResponse> => {
   const axios = getAxios();
-  const { data } = await axios.get('/categories?api-version=2026-01-01', {
+  const { data } = await axios.get('/categories', {
     params: {
       skip,
       top,

@@ -12,19 +12,27 @@ import {
  * Returns the mutation state and function.
  */
 export const useCheckoutPayment = () => {
-  return useMutation<CheckoutResponse, Error, { orderId: number; payload: CheckoutPayload }>({
-    mutationFn: ({ orderId, payload }) => paymentService.checkout(orderId, payload),
+  return useMutation<
+    CheckoutResponse,
+    Error,
+    { orderId: number; payload: CheckoutPayload }
+  >({
+    mutationFn: ({ orderId, payload }) =>
+      paymentService.checkout(orderId, payload),
   });
 };
 
 /**
  * Hook for polling payment status.
  * Automatically polls every 3 seconds as long as status is PENDING.
- * 
+ *
  * @param paymentId - The unique ID of the payment to poll
  * @param enabled - Optional flag to start/stop polling (defaults to !!paymentId)
  */
-export const usePaymentStatus = (paymentId: number | null, enabled: boolean = true) => {
+export const usePaymentStatus = (
+  paymentId: number | null,
+  enabled: boolean = true,
+) => {
   return useQuery<PaymentStatusResponse, Error>({
     queryKey: ['payment-status', paymentId],
     queryFn: () => {
@@ -40,7 +48,7 @@ export const usePaymentStatus = (paymentId: number | null, enabled: boolean = tr
       return false; // Stop polling on Success or Failed
     },
     // Keep data until we manually reset (helpful for Success UI)
-    staleTime: Infinity, 
-    gcTime: 10 * 60 * 1000, 
+    staleTime: Infinity,
+    gcTime: 10 * 60 * 1000,
   });
 };

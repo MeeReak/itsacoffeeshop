@@ -19,8 +19,14 @@ export interface LookupItem {
 export const useLookups = () => {
   return useQuery<LookupReadDto>({
     queryKey: ['lookups'],
-    queryFn: () => lookUpService.getLookUps(),
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    gcTime: 1000 * 60 * 60 * 24, // optional, keep cache for 24h
+    queryFn: async () => {
+      const response = await lookUpService.getLookups();
+      if ('data' in response) {
+        return response as LookupReadDto;
+      }
+      return response as LookupReadDto;
+    },
+    staleTime: 1000 * 60 * 60 * 24,
+    gcTime: 1000 * 60 * 60 * 24,
   });
 };

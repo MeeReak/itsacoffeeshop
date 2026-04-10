@@ -14,7 +14,7 @@ export const getProducts = async ({
   search?: string;
   categoryId?: number;
 }): Promise<ProductListResponse> => {
-  const { data } = await axios.get('/products?api-version=2026-01-01', {
+  const { data } = await axios.get('/products', {
     params: { skip, top, search, categoryId },
   });
 
@@ -22,14 +22,14 @@ export const getProducts = async ({
 };
 
 export const getProduct = async (id: number): Promise<Product> => {
-  const { data } = await axios.get(`/products/${id}?api-version=2026-01-01`);
+  const { data } = await axios.get(`/products/${id}`);
   return data;
 };
 
 const getFeatureProducts = async (): Promise<Product[]> => {
-  const { data } = await axios.get(
-    '/products?api-version=2026-01-01&is-feature=true',
-  );
+  const { data } = await axios.get('/products', {
+    params: { 'is-feature': true },
+  });
   return data.value.slice(0, 4);
 };
 

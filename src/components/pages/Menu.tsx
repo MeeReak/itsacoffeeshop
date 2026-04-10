@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -12,7 +12,6 @@ import { useGetCategories } from '@/hooks/useCategory';
 import { ProductPagination } from '../ProductPagination';
 import { useLookups } from '@/hooks/useLookUp';
 import { useCart } from '@/contexts/CartContext';
-import { Category } from '@/types';
 
 interface FormValues {
   search: string;
@@ -48,10 +47,31 @@ export default function Menu() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  // Reset page when searching
+  // Fetch categories
+  const {
+    data: categoriesData,
+    isLoading: isCategoriesLoading,
+    isError: isCategoriesError,
+  } = useGetCategories({
+    top: 100,
+    page: 1,
+    search: '',
+  });
+
+  const categories = categoriesData?.value || [];
+
+  // Find categoryId for the selected category name
+  const selectedCategoryId = useMemo(() => {
+    if (category.toLowerCase() === 'all') return undefined;
+    return categories.find(
+      (c) => c.name.toLowerCase() === category.toLowerCase(),
+    )?.id;
+  }, [category, categories]);
+
+  // Reset page when searching or changing category
   useEffect(() => {
     setTimeout(() => setPage(1), 0);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, selectedCategoryId]);
 
   // Sync category with URL
   useEffect(() => {
@@ -62,51 +82,26 @@ export default function Menu() {
         scroll: false,
       });
     }
-
-    setTimeout(() => setPage(1), 0);
   }, [category, router]);
 
-  // Fetch products
+  const ITEMS_PER_PAGE = 8;
+
+  // Fetch products with server-side filtering and pagination
   const {
     data: productsData,
     isLoading: isProductsLoading,
     isError: isProductsError,
   } = useGetProducts({
-    top: 100,
-    page: 1,
+    top: ITEMS_PER_PAGE,
+    page: page,
     search: debouncedSearch,
-  });
-
-  // Fetch categories
-  const {
-    data: categoriesData,
-    isLoading: isCategoriesLoading,
-    isError: isCategoriesError,
-  } = useGetCategories({
-    top: 5,
-    page: 1,
+    categoryId: selectedCategoryId,
   });
 
   const products = productsData?.value || [];
-  const categories = categoriesData?.value || [];
-
-  // Map categoryId → category name
-  const categoryMap = new Map<number, string>();
-  categories.forEach((cat: Category) => categoryMap.set(cat.id, cat.name));
-
-  // Filter by category
-  const filteredProducts = products.filter((p) => {
-    if (category.toLowerCase() === 'all') return true;
-
-    const productCategoryName = categoryMap.get(p.categoryId) ?? '';
-
-    return productCategoryName.toLowerCase() === category.toLowerCase();
-  });
-
-  // Pagination AFTER filtering
-  const paginatedProducts = filteredProducts.slice((page - 1) * 8, page * 8);
-
-  const totalPages = Math.ceil(filteredProducts.length / 8);
+  const totalPages = Math.ceil(
+    (productsData?.totalCount || 0) / ITEMS_PER_PAGE,
+  );
 
   const { data: lookUpData } = useLookups();
 
@@ -188,8 +183,8 @@ export default function Menu() {
           Array.from({ length: 8 }).map((_, i) => (
             <FeatureCardSkeleton key={i} />
           ))
-        ) : paginatedProducts.length > 0 ? (
-          paginatedProducts.map((product) => (
+        ) : products.length > 0 ? (
+          products.map((product) => (
             <FeatureCard
               cart={cart}
               lookUp={lookUpData}

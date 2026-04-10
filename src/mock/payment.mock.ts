@@ -12,7 +12,7 @@ export const checkout = async (
   payload: CheckoutPayload,
 ): Promise<CheckoutResponse> => {
   statusCounter = 0; // Reset polling simulation
-  
+
   // Simulate network latency
   await new Promise((resolve) => setTimeout(resolve, 800));
 

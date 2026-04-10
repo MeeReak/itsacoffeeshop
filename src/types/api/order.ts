@@ -16,6 +16,7 @@ export interface OrderItem {
   productDetails: ProductDetail;
   ice: number;
   sugar: number;
+  number: string;
   coffeeLevel: number;
 }
 

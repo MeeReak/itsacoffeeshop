@@ -102,7 +102,7 @@ export const Checkout = ({ id }: { id: string }) => {
             <span>${total.toFixed(2)}</span>
           </div>
 
-          <PaymentModal orderId={order.id} orderNumber={order.number} totalAmount={total} />
+          <PaymentModal orderId={order.id} orderNumber={order.number} />
         </section>
       </div>
     </div>

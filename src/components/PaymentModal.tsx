@@ -20,6 +20,7 @@ import {
 import { toast } from 'sonner';
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/contexts/CartContext';
 
 interface PaymentModalProps {
   orderId: number;
@@ -45,6 +46,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     paymentId,
     isOpen,
   );
+  const { clearCart } = useCart();
 
   const handleOpen = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -116,9 +118,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       toast.success('Payment completed successfully!');
       localStorage.removeItem('orderId'); // Integration point
       localStorage.removeItem('cart'); // Clear cart on success
+      clearCart(); // Clear cart context
 
       // Auto-close after 2s
-      setTimeout(() => setIsOpen(false), 2500);
+      setTimeout(() => setIsOpen(false), 5000);
       router.push(`/menu`);
     } else if (
       statusData.status === PaymentStatus.FAILED ||

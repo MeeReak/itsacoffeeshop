@@ -38,7 +38,7 @@ export const mockLookUps: LookupReadDto = {
   ] as LookupItem[],
 };
 
-export const getLookUps = async (): Promise<{
+export const getLookups = async (): Promise<{
   ices: LookupItem[];
   sizes: LookupItem[];
   sugars: LookupItem[];

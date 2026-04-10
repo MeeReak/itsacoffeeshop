@@ -1,9 +1,9 @@
-import { LookupReadDto } from '@/hooks/useLookUp';
 import { getAxios } from '@/lib/axios';
+import { LookUpListResponse } from '@/types/api/lookUp';
 
 const axios = getAxios();
 
-export const getLookUps = async (): Promise<LookupReadDto> => {
-  const { data } = await axios.get('/lookups?api-version=2026-01-01');
+export const getLookups = async (): Promise<LookUpListResponse> => {
+  const { data } = await axios.get('/lookups');
   return data;
 };
