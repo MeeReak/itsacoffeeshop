@@ -14,12 +14,10 @@ import { KHQRCard } from './KHQRCard';
 interface QrDialogProps {
   qrUrl?: string; // QR image URL
   state?: 'loading' | 'success' | 'error' | 'idle';
-  orderNumber?: string;
 }
 
 export const QrDialog: React.FC<QrDialogProps> = ({
   state = 'idle',
-  orderNumber,
 }) => {
   return (
     <Dialog>

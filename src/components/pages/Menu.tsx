@@ -58,7 +58,7 @@ export default function Menu() {
     search: '',
   });
 
-  const categories = categoriesData?.value || [];
+  const categories = useMemo(() => categoriesData?.value || [], [categoriesData]);
 
   // Find categoryId for the selected category name
   const selectedCategoryId = useMemo(() => {

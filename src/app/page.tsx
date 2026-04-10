@@ -39,12 +39,12 @@ const galleryImages = [
 
 export default function Home() {
   const { data, isLoading, isError } = useGetFeatureProducts();
+  const { data: lookUpData } = useLookups();
+  const { cart } = useCart();
 
   if (isError) return <p>Failed to load products.</p>;
 
   const featureProduct: Product[] = data || [];
-  const { data: lookUpData } = useLookups();
-  const { cart } = useCart();
 
   return (
     <main className="bg-[#f8f6f1]">

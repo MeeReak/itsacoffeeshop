@@ -32,13 +32,35 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   orderNumber,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [paymentId, setPaymentId] = React.useState<number | null>(null);
+  const [paymentId, setPaymentId] = React.useState<number | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const stored = localStorage.getItem('qrData');
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    return new Date(parsed.expireAt).getTime() > Date.now() ? parsed.id : null;
+  });
+
   const [qrData, setQrData] = React.useState<{
     qr: string;
     amount: number;
     expireAt: string;
-  } | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  } | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const stored = localStorage.getItem('qrData');
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    return new Date(parsed.expireAt).getTime() > Date.now() ? parsed : null;
+  });
+
+  const [timeLeft, setTimeLeft] = useState<number | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const stored = localStorage.getItem('qrData');
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    if (new Date(parsed.expireAt).getTime() <= Date.now()) return null;
+    return Math.floor((new Date(parsed.expireAt).getTime() - Date.now()) / 1000);
+  });
+
   const router = useRouter();
   // API Hooks
   const { mutate: checkout, isPending: isGenerating } = useCheckoutPayment();
@@ -47,21 +69,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     isOpen,
   );
   const { clearCart } = useCart();
-
-  useEffect(() => {
-    const storedQrData = localStorage.getItem('qrData');
-    if (storedQrData) {
-      const parsed = JSON.parse(storedQrData);
-      if (parsed.expireAt && new Date(parsed.expireAt).getTime() > Date.now()) {
-        setQrData(parsed);
-        const diffInSecs = Math.floor(
-          (new Date(parsed.expireAt).getTime() - Date.now()) / 1000,
-        );
-        setTimeLeft(diffInSecs);
-        setPaymentId(parsed.id);
-      }
-    }
-  }, []);
 
   const handleOpen = (e: React.MouseEvent) => {
     e.preventDefault();

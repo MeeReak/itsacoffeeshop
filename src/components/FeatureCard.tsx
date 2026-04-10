@@ -3,7 +3,7 @@ import { CustomizeDialog } from './CustomizeDialog';
 import { Product } from '@/types/api/product';
 import { LookupReadDto } from '@/hooks/useLookUp';
 import { CartItem } from '@/types';
-import { FlameIcon } from 'lucide-react';
+
 // import { CartItem } from '@/contexts/CartContext';
 
 interface FeatureCardProps {

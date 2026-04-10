@@ -26,9 +26,7 @@ export const checkout = async (
   };
 };
 
-export const getStatus = async (
-  _paymentId: number,
-): Promise<PaymentStatusResponse> => {
+export const getStatus = async (): Promise<PaymentStatusResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 500));
   statusCounter++;
 
