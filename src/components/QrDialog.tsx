@@ -16,9 +16,7 @@ interface QrDialogProps {
   state?: 'loading' | 'success' | 'error' | 'idle';
 }
 
-export const QrDialog: React.FC<QrDialogProps> = ({
-  state = 'idle',
-}) => {
+export const QrDialog: React.FC<QrDialogProps> = ({ state = 'idle' }) => {
   return (
     <Dialog>
       <DialogTrigger className="bg-black text-white py-2 rounded-lg hover:opacity-90 transition text-lg font-medium w-full cursor-pointer">

@@ -21,7 +21,7 @@ export const checkout = async (
     amount: 12.5, // In a real app, this comes from the order
     method: payload.method,
     currency: payload.currency,
-    qr: `https://itscoffeeshop.com/pay/${orderId}`,
+    qr: `https://www.youtube.com/watch?v=m_XUClQCOUc&list=RDm_XUClQCOUc&start_radio=1`,
     expireAt: new Date(Date.now() + 5 * 60000).toISOString(), // 5 mins from now
   };
 };

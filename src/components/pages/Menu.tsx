@@ -18,6 +18,9 @@ interface FormValues {
   category: string;
 }
 
+import { ErrorState } from '../ui/states/ErrorState';
+import { EmptyState } from '../ui/states/EmptyState';
+
 export default function Menu() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -52,13 +55,17 @@ export default function Menu() {
     data: categoriesData,
     isLoading: isCategoriesLoading,
     isError: isCategoriesError,
+    refetch: refetchCategories,
   } = useGetCategories({
     top: 100,
     page: 1,
     search: '',
   });
 
-  const categories = useMemo(() => categoriesData?.value || [], [categoriesData]);
+  const categories = useMemo(
+    () => categoriesData?.value || [],
+    [categoriesData],
+  );
 
   // Find categoryId for the selected category name
   const selectedCategoryId = useMemo(() => {
@@ -91,6 +98,7 @@ export default function Menu() {
     data: productsData,
     isLoading: isProductsLoading,
     isError: isProductsError,
+    refetch: refetchProducts,
   } = useGetProducts({
     top: ITEMS_PER_PAGE,
     page: page,
@@ -106,6 +114,16 @@ export default function Menu() {
   const { data: lookUpData } = useLookups();
 
   const { cart } = useCart();
+
+  const handleRetry = () => {
+    refetchCategories();
+    refetchProducts();
+  };
+
+  const clearSearch = () => {
+    setValue('search', '');
+    setValue('category', 'All');
+  };
 
   return (
     <main className="bg-[#f8f6f1] min-h-[110vh]">
@@ -125,18 +143,20 @@ export default function Menu() {
       {/* Search + Category */}
       <section className="max-w-7xl mx-auto px-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Search */}
-        <Controller
-          name="search"
-          control={control}
-          render={({ field }) => (
-            <input
-              {...field}
-              type="text"
-              placeholder="Search products..."
-              className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:border-[#f5dc50] focus:outline-none focus:ring-1 focus:ring-[#f5dc50]"
-            />
-          )}
-        />
+        <div className="relative flex-1">
+          <Controller
+            name="search"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                placeholder="Search products..."
+                className="w-full px-6 py-3 rounded-full border border-gray-200 focus:border-[#f5dc50] focus:outline-none focus:ring-4 focus:ring-[#f5dc50]/10 transition-all bg-white shadow-sm"
+              />
+            )}
+          />
+        </div>
 
         {/* Categories */}
         {isCategoriesLoading ? (
@@ -146,10 +166,10 @@ export default function Menu() {
             <button
               type="button"
               onClick={() => setValue('category', 'All')}
-              className={`cursor-pointer px-4 py-2 rounded-full font-semibold transition ${
+              className={`cursor-pointer px-6 py-2.5 rounded-full font-bold transition-all duration-200 ${
                 category === 'All'
-                  ? 'bg-[#f5dc50] text-black'
-                  : 'bg-white text-gray-700 shadow hover:shadow-md'
+                  ? 'bg-[#f5dc50] text-black shadow-md scale-105'
+                  : 'bg-white text-gray-500 shadow-sm hover:shadow-md'
               }`}
             >
               All
@@ -160,10 +180,10 @@ export default function Menu() {
                 key={cat.id}
                 type="button"
                 onClick={() => setValue('category', cat.name)}
-                className={`cursor-pointer px-4 py-2 rounded-full font-semibold transition ${
+                className={`cursor-pointer px-6 py-2.5 rounded-full font-bold transition-all duration-200 ${
                   category.toLowerCase() === cat.name.toLowerCase()
-                    ? 'bg-[#f5dc50] text-black'
-                    : 'bg-white text-gray-700 shadow hover:shadow-md'
+                    ? 'bg-[#f5dc50] text-black shadow-md scale-105'
+                    : 'bg-white text-gray-500 shadow-sm hover:shadow-md'
                 }`}
               >
                 {cat.name}
@@ -174,28 +194,39 @@ export default function Menu() {
       </section>
 
       {/* Products */}
-      <section className="max-w-7xl mx-auto px-6 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-20">
+      <section className="max-w-7xl mx-auto px-6 pb-20 min-h-100">
         {isProductsError || isCategoriesError ? (
-          <p className="text-center col-span-full text-red-500">
-            Failed to load products or categories.
-          </p>
-        ) : isProductsLoading ? (
-          Array.from({ length: 8 }).map((_, i) => (
-            <FeatureCardSkeleton key={i} />
-          ))
-        ) : products.length > 0 ? (
-          products.map((product) => (
-            <FeatureCard
-              cart={cart}
-              lookUp={lookUpData}
-              key={product.id}
-              product={product}
+          <div className="py-12 bg-white rounded-3xl shadow-sm border border-gray-100">
+            <ErrorState
+              message="We couldn't load the menu items right now."
+              onRetry={handleRetry}
             />
-          ))
+          </div>
+        ) : isProductsLoading ? (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <FeatureCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : products.length > 0 ? (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {products.map((product) => (
+              <FeatureCard
+                cart={cart}
+                lookUp={lookUpData}
+                key={product.id}
+                product={product}
+              />
+            ))}
+          </div>
         ) : (
-          <p className="text-center col-span-full text-gray-500">
-            No products match your search ☹️
-          </p>
+          <div className="py-12">
+            <EmptyState
+              title="No products match your search"
+              message={`We couldn't find anything matching in ${category}`}
+              onAction={clearSearch}
+            />
+          </div>
         )}
       </section>
 

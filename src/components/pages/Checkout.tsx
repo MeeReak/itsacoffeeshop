@@ -5,23 +5,73 @@ import { CartItem } from '../CartItem';
 import { PaymentModal } from '../PaymentModal';
 import Image from 'next/image';
 import { Badge } from '../ui/badge';
+import { useRouter } from 'next/navigation';
+import { ErrorState } from '../ui/states/ErrorState';
+import { Skeleton } from '../ui/skeleton/Skeleton';
 
 export const Checkout = ({ id }: { id: string }) => {
+  const router = useRouter();
   const {
     data: order,
     isLoading,
     error,
+    refetch,
   } = useGetOrderItemProductById(Number(id));
 
-  if (isLoading)
-    return <div className="p-10 text-center">Loading order...</div>;
-  if (error)
+  const handleReturnToMenu = () => {
+    localStorage.removeItem('orderId');
+    router.push('/menu');
+  };
+
+  if (isLoading) {
     return (
-      <div className="p-10 text-center text-red-500">
-        {(error as Error).message}
+      <div className="bg-[#f8f6f1] min-h-screen py-12 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 px-6">
+          <div className="space-y-6">
+            <Skeleton className="h-75 w-full rounded-xl" />
+            <div className="bg-white p-6 rounded-xl shadow-md space-y-4 h-74.75">
+              <Skeleton className="h-8 w-1/3" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-5 mt-6 w-1/3" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-md h-[623px] flex flex-col">
+            <Skeleton className="h-8 w-1/3 mb-6" />
+            <div className="flex-1 space-y-4">
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+            <div className="space-y-2 mt-6">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-12 w-full mt-4" />
+            </div>
+          </div>
+        </div>
       </div>
     );
-  if (!order) return <div className="p-10 text-center">Order not found</div>;
+  }
+
+  if (error || !order) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f8f6f1] p-6">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+          <ErrorState
+            title="Order Not Found"
+            message="We couldn't find this order. It might have expired or doesn't exist."
+            onRetry={() => refetch()}
+          />
+          <button
+            onClick={handleReturnToMenu}
+            className="mt-4 w-full py-3 text-gray-500 font-medium hover:text-gray-800 transition text-center"
+          >
+            ← Return to Menu
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#f8f6f1] min-h-screen py-12 px-4 md:px-8">
@@ -64,8 +114,16 @@ export const Checkout = ({ id }: { id: string }) => {
 
             <h3 className="text-lg font-semibold mt-6">Payment Method</h3>
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
-              <input type="radio" name="payment" checked readOnly className="accent-[#f5dc50] w-4 h-4" />
-              <span className="font-medium text-gray-800">KHQR Digital Payment</span>
+              <input
+                type="radio"
+                name="payment"
+                checked
+                readOnly
+                className="accent-[#f5dc50] w-4 h-4"
+              />
+              <span className="font-medium text-gray-800">
+                KHQR Digital Payment
+              </span>
             </div>
           </div>
         </section>

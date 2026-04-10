@@ -23,7 +23,7 @@ export interface OrderItem {
 export interface Order {
   id: number;
   number: string;
-  type: 1 | 2; // 1: Dine-in, 2: Takeaway
+  type: 0 | 1; // 0: Takeaway, 1: Dine-in
   status: number;
   subTotal: number;
   tax: number;
@@ -43,7 +43,7 @@ export interface OrderPayloadItem {
 }
 
 export interface OrderPayload {
-  type: 1 | 2;
+  type: 0 | 1; // 0: Takeaway, 1: Dine-in
   cashierId: number;
   orderItems: OrderPayloadItem[];
 }

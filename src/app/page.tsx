@@ -28,6 +28,7 @@ const testimonials = [
     avatar: '/customers/customer3.jpg',
   },
 ];
+
 const galleryImages = [
   '/coffee/latte-art.jpg',
   '/coffee/espresso-shot.jpg',
@@ -36,13 +37,12 @@ const galleryImages = [
   '/coffee/fresh-roasted-beans.jpg',
   '/coffee/coffee-shop-interior.jpg',
 ];
+import { ErrorState } from '@/components/ui/states/ErrorState';
 
 export default function Home() {
-  const { data, isLoading, isError } = useGetFeatureProducts();
+  const { data, isLoading, isError, refetch } = useGetFeatureProducts();
   const { data: lookUpData } = useLookups();
   const { cart } = useCart();
-
-  if (isError) return <p>Failed to load products.</p>;
 
   const featureProduct: Product[] = data || [];
 
@@ -86,20 +86,30 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-center mb-12">
           Featured Coffee
         </h2>
-        <div className="grid md:grid-cols-4 gap-8">
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <FeatureCardSkeleton key={i} />
-              ))
-            : featureProduct.map((coffee: Product) => (
-                <FeatureCard
-                  key={coffee.id}
-                  product={coffee}
-                  cart={cart}
-                  lookUp={lookUpData}
-                />
-              ))}
-        </div>
+
+        {isError ? (
+          <div className="py-12 bg-white rounded-3xl shadow-sm border border-gray-100 max-w-2xl mx-auto">
+            <ErrorState
+              message="We couldn't load the featured drinks right now."
+              onRetry={() => refetch()}
+            />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-4 gap-8">
+            {isLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <FeatureCardSkeleton key={i} />
+                ))
+              : featureProduct.map((coffee: Product) => (
+                  <FeatureCard
+                    key={coffee.id}
+                    product={coffee}
+                    cart={cart}
+                    lookUp={lookUpData}
+                  />
+                ))}
+          </div>
+        )}
       </section>
 
       {/* ABOUT US */}

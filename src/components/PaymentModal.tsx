@@ -58,7 +58,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     if (!stored) return null;
     const parsed = JSON.parse(stored);
     if (new Date(parsed.expireAt).getTime() <= Date.now()) return null;
-    return Math.floor((new Date(parsed.expireAt).getTime() - Date.now()) / 1000);
+    return Math.floor(
+      (new Date(parsed.expireAt).getTime() - Date.now()) / 1000,
+    );
   });
 
   const router = useRouter();

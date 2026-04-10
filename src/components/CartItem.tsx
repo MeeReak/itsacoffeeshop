@@ -76,11 +76,11 @@ export const CartItem = ({ item }: CartItemProps) => {
             )}
           </div>
 
-          {item.note && (
+          {/* {item.note && (
             <div className="mt-2 p-2 bg-amber-50 rounded border border-amber-100 text-sm text-amber-900 italic">
               &quot;{item.note}&quot;
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="flex justify-between items-center mt-3">

@@ -41,7 +41,7 @@ export default function CartDialog() {
 
   useEffect(() => {
     setTimeout(() => {
-      const id = localStorage.getItem('orderId');
+      const id = localStorage.getItem('orderId') || '126';
       setOrderId(id);
     }, 0);
   }, []);

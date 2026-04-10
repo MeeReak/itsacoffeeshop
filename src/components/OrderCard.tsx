@@ -79,11 +79,11 @@ export const OrderCard = ({ order }: OrderCardProp) => {
           )}
         </div>
 
-        {order.note && (
+        {/* {order.note && (
           <p className="text-[10px] text-gray-500 mt-1 italic truncate max-w-37.5">
             &quot;{order.note}&quot;
           </p>
-        )}
+        )} */}
 
         <p className="text-sm text-gray-500 mt-1">${order.price.toFixed(2)}</p>
       </div>

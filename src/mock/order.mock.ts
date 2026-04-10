@@ -2,7 +2,7 @@ import { Order, OrderPayload, OrderResponse } from '@/types/api/order';
 
 const mockOrders: Order[] = [
   {
-    id: 1,
+    id: 126,
     number: 'ORD-123456',
     type: 1,
     status: 1,
@@ -57,6 +57,7 @@ export const getOrderById = async (id: number): Promise<Order> => {
   if (!order) {
     throw new Error('Order not found');
   }
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   return Promise.resolve(order);
 };
 
@@ -65,9 +66,12 @@ export const createOrder = async (
 ): Promise<OrderResponse> => {
   const newId = mockOrders.length + 1;
   const newNumber = `ORD-${Math.floor(Math.random() * 1000000)}`;
-  
+
   // Calculate totals from payload for a more realistic mock
-  const subTotal = payload.orderItems.reduce((acc, item) => acc + (2.5 * item.quantity), 0);
+  const subTotal = payload.orderItems.reduce(
+    (acc, item) => acc + 2.5 * item.quantity,
+    0,
+  );
   const tax = subTotal * 0.1;
   const total = subTotal + tax;
 
@@ -114,12 +118,15 @@ export const updateOrder = async (
 ): Promise<OrderResponse> => {
   const orderId = Number(id);
   const existingIndex = mockOrders.findIndex((o) => o.id === orderId);
-  
+
   if (existingIndex === -1) {
     throw new Error('Order not found');
   }
 
-  const subTotal = payload.orderItems.reduce((acc, item) => acc + (2.5 * item.quantity), 0);
+  const subTotal = payload.orderItems.reduce(
+    (acc, item) => acc + 2.5 * item.quantity,
+    0,
+  );
   const tax = subTotal * 0.1;
   const total = subTotal + tax;
 
