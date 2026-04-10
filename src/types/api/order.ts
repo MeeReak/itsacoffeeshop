@@ -11,13 +11,13 @@ export interface OrderItem {
   productName: string;
   price: number;
   quantity: number;
-  size: number;
+  sizeId: number;
   note: string;
   productDetails: ProductDetail;
-  ice: number;
-  sugar: number;
+  iceId: number;
+  sugarId: number;
   number: string;
-  coffeeLevel: number;
+  coffeeLevelId: number;
 }
 
 export interface Order {
@@ -34,12 +34,12 @@ export interface Order {
 export interface OrderPayloadItem {
   productId: number;
   quantity: number;
-  size: 1 | 2 | 3; // 1: Small, 2: Medium, 3: Large
+  sizeId: 1 | 2 | 3; // 1: Small, 2: Medium, 3: Large
   note?: string;
   number: string;
-  ice: number;
-  sugar: number;
-  coffeeLevel: number;
+  iceLevelId: number;
+  sugarLevelId: number;
+  coffeeLevelId: number;
 }
 
 export interface OrderPayload {

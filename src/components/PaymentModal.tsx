@@ -48,6 +48,21 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   );
   const { clearCart } = useCart();
 
+  useEffect(() => {
+    const storedQrData = localStorage.getItem('qrData');
+    if (storedQrData) {
+      const parsed = JSON.parse(storedQrData);
+      if (parsed.expireAt && new Date(parsed.expireAt).getTime() > Date.now()) {
+        setQrData(parsed);
+        const diffInSecs = Math.floor(
+          (new Date(parsed.expireAt).getTime() - Date.now()) / 1000,
+        );
+        setTimeLeft(diffInSecs);
+        setPaymentId(parsed.id);
+      }
+    }
+  }, []);
+
   const handleOpen = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsOpen(true);
@@ -75,6 +90,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             amount: data.amount,
             expireAt: data.expireAt,
           });
+          localStorage.setItem('qrData', JSON.stringify(data));
 
           // Initialize timer
           const diffInSecs = Math.max(
@@ -141,7 +157,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger
         onClick={handleOpen}
-        className="bg-black text-white py-4 rounded-xl hover:opacity-90 transition text-lg font-bold w-full cursor-pointer flex items-center justify-center gap-2"
+        className="bg-black text-white py-3 rounded-xl hover:opacity-90 transition text-base font-bold w-full cursor-pointer flex items-center justify-center gap-2"
       >
         <QrCode className="w-6 h-6" />
         Pay Now

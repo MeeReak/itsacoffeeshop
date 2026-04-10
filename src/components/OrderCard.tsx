@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Badge } from './ui/badge';
 import { useState } from 'react';
 import { CartItem } from '@/types/ui/cart';
+import { useLookups } from '@/hooks/useLookUp';
 
 interface OrderCardProp {
   order: CartItem;
@@ -12,12 +13,22 @@ interface OrderCardProp {
 export const OrderCard = ({ order }: OrderCardProp) => {
   const { decreaseQty, increaseQty, removeItem } = useCart();
   const [scaleQty, setScaleQty] = useState(false);
+  const { data: lookups } = useLookups();
 
   const changeQty = () => {
     setScaleQty(true);
     setTimeout(() => setScaleQty(false), 100); // animation duration
   };
   const itemTotal = order.price * order.qty;
+
+  const iceLabel =
+    lookups?.ices.find((i) => i.id === order.ice)?.name || `Ice ${order.ice}`;
+  const sugarLabel =
+    lookups?.sugars.find((s) => s.id === order.sugar)?.name ||
+    `Sugar ${order.sugar}`;
+  const levelLabel = lookups?.coffeeLevels.find(
+    (l) => l.id === order.coffeeLevel,
+  )?.name;
 
   return (
     <div className="flex items-center gap-4 p-4 border rounded-xl bg-white shadow-sm hover:shadow-md transition">
@@ -36,23 +47,43 @@ export const OrderCard = ({ order }: OrderCardProp) => {
         <p className="font-semibold">{order.name}</p>
 
         {/* Customization */}
-        <div className="flex flex-wrap gap-2 mt-1 text-xs">
+        <div className="flex flex-wrap gap-2 mt-1">
           {order.size && (
-            <span className="bg-gray-100 px-2 py-1 rounded">
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
               {order.size === 1
                 ? 'Small'
                 : order.size === 2
                   ? 'Medium'
                   : 'Large'}
-            </span>
+            </Badge>
           )}
 
-          {order.ice && <Badge>Ice {order.ice}</Badge>}
+          <Badge
+            variant="secondary"
+            className="text-[10px] px-1.5 py-0 h-5 bg-blue-50 text-blue-700 border-blue-100"
+          >
+            {iceLabel}
+          </Badge>
 
-          {order.sugar && (
-            <Badge variant="secondary">Sugar {order.sugar}</Badge>
+          <Badge
+            variant="secondary"
+            className="text-[10px] px-1.5 py-0 h-5 bg-amber-50 text-amber-700 border-amber-100"
+          >
+            {sugarLabel}
+          </Badge>
+
+          {levelLabel && levelLabel !== 'Normal Coffee' && (
+            <Badge className="text-[10px] px-1.5 py-0 h-5 bg-[#f5dc50] text-black hover:bg-[#f5dc50]">
+              {levelLabel}
+            </Badge>
           )}
         </div>
+
+        {order.note && (
+          <p className="text-[10px] text-gray-500 mt-1 italic truncate max-w-37.5">
+            &quot;{order.note}&quot;
+          </p>
+        )}
 
         <p className="text-sm text-gray-500 mt-1">${order.price.toFixed(2)}</p>
       </div>

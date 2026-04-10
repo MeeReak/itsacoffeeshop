@@ -8,6 +8,8 @@ import { FeedBackCard } from '@/components/FeedBackCard';
 import { useGetFeatureProducts } from '@/hooks/useProduct';
 import { FeatureCardSkeleton } from '@/components/FeatureCardSkeleton';
 import { Product } from '@/types/api/product';
+import { useLookups } from '@/hooks/useLookUp';
+import { useCart } from '@/contexts/CartContext';
 
 const testimonials = [
   {
@@ -41,6 +43,8 @@ export default function Home() {
   if (isError) return <p>Failed to load products.</p>;
 
   const featureProduct: Product[] = data || [];
+  const { data: lookUpData } = useLookups();
+  const { cart } = useCart();
 
   return (
     <main className="bg-[#f8f6f1]">
@@ -88,7 +92,12 @@ export default function Home() {
                 <FeatureCardSkeleton key={i} />
               ))
             : featureProduct.map((coffee: Product) => (
-                <FeatureCard key={coffee.id} product={coffee} />
+                <FeatureCard
+                  key={coffee.id}
+                  product={coffee}
+                  cart={cart}
+                  lookUp={lookUpData}
+                />
               ))}
         </div>
       </section>

@@ -59,12 +59,12 @@ export default function CartDialog() {
       (item: OrderItem) => ({
         productId: item.productId,
         quantity: item.quantity,
-        size: item.size as 1 | 2 | 3,
+        sizeId: item.sizeId as 1 | 2 | 3,
         note: item.note ?? '',
         number: item.number,
-        sugar: item.sugar,
-        coffeeLevel: item.coffeeLevel,
-        ice: item.ice,
+        sugarLevelId: item.sugarId,
+        coffeeLevelId: item.coffeeLevelId,
+        iceLevelId: item.iceId,
       }),
     );
 
@@ -87,13 +87,16 @@ export default function CartDialog() {
     [cart],
   );
 
+  const [orderType, setOrderType] = useState<0 | 1>(0);
+
   const handleCheckout = () => {
     if (!cart.length) {
       toast.error('Cart is empty');
       return;
     }
 
-    const payload = buildOrderPayload(cart);
+    const payload = buildOrderPayload(cart, orderType);
+
     const cartHash = generateCartHash(payload.orderItems);
     const cartChanged = cartHash !== originalCartHash;
 
@@ -169,6 +172,30 @@ export default function CartDialog() {
             </div>
 
             <div className="border-t mt-6 pt-4 space-y-4">
+              {/* Order Type Selector */}
+              <div className="flex gap-4 p-2 bg-gray-50 rounded-xl">
+                <button
+                  onClick={() => setOrderType(0)}
+                  className={`flex-1 py-2.5 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${
+                    orderType === 0
+                      ? 'bg-[#f5dc50] text-black shadow-sm scale-[1.02]'
+                      : 'bg-white text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="text-xl">🍽️</span> Dine-in
+                </button>
+                <button
+                  onClick={() => setOrderType(1)}
+                  className={`flex-1 py-2.5 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${
+                    orderType === 1
+                      ? 'bg-[#f5dc50] text-black shadow-sm scale-[1.02]'
+                      : 'bg-white text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="text-xl">🛍️</span> Takeaway
+                </button>
+              </div>
+
               <div className="flex justify-between text-lg font-semibold">
                 <span>Subtotal</span>
                 <span>${totalPrice.toFixed(2)}</span>

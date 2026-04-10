@@ -111,7 +111,7 @@ export const CustomizeDialog = ({
       note: data.note,
       qty: data.qty,
       size: 1,
-      number: '',
+      number: customKey,
       // ...data,
     });
 
@@ -252,11 +252,13 @@ export const CustomizeDialog = ({
                 setValue('coffeeLevel', val as '1' | '2' | '3')
               }
               options={
-                lookUp?.coffeeLevels.map((level) => ({
-                  label: level.name,
-                  value: String(level.id),
-                  priceLabel: level.price,
-                })) ?? []
+                lookUp?.coffeeLevels
+                  .filter((level) => level.id !== 2)
+                  .map((level) => ({
+                    label: level.name,
+                    value: String(level.id),
+                    priceLabel: level.price,
+                  })) ?? []
               }
             />
           </div>

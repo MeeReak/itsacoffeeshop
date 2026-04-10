@@ -4,7 +4,7 @@ import { useGetOrderItemProductById } from '@/hooks/useOrder';
 import { CartItem } from '../CartItem';
 import { PaymentModal } from '../PaymentModal';
 import Image from 'next/image';
-import { useState } from 'react';
+import { Badge } from '../ui/badge';
 
 export const Checkout = ({ id }: { id: string }) => {
   const {
@@ -12,9 +12,6 @@ export const Checkout = ({ id }: { id: string }) => {
     isLoading,
     error,
   } = useGetOrderItemProductById(Number(id));
-
-  // Always define hooks at the top
-  const [customer, setCustomer] = useState({ name: '', phone: '', table: '' });
 
   if (isLoading)
     return <div className="p-10 text-center">Loading order...</div>;
@@ -26,17 +23,12 @@ export const Checkout = ({ id }: { id: string }) => {
     );
   if (!order) return <div className="p-10 text-center">Order not found</div>;
 
-  const total = order.orderItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-
   return (
     <div className="bg-[#f8f6f1] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 px-6">
         {/* LEFT: Customer Info */}
         <section className="space-y-6">
-          <div className="relative h-60 md:h-64 rounded-lg overflow-hidden shadow-md">
+          <div className="relative h-60 md:h-75 rounded-lg overflow-hidden shadow-md">
             <Image
               src="/coffee/checkout.jpg"
               alt="checkout banner"
@@ -49,60 +41,74 @@ export const Checkout = ({ id }: { id: string }) => {
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow-md space-y-4">
-            <h2 className="text-2xl font-bold">Your Information</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Order Details</h2>
+              <Badge className="bg-[#f5dc50] text-black border-[#f5dc50] hover:bg-[#f5dc50] flex items-center gap-1.5 px-2 py-3">
+                <span className="text-lg">
+                  {order.type === 1 ? '🍽️' : '🛍️'}
+                </span>
+                {order.type === 1 ? 'Dine-in' : 'Takeaway'}
+              </Badge>
+            </div>
 
-            <input
-              type="text"
-              placeholder="Your Name"
-              value={customer.name}
-              onChange={(e) =>
-                setCustomer({ ...customer, name: e.target.value })
-              }
-              className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-[#f5dc50] outline-none"
-            />
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              value={customer.phone}
-              onChange={(e) =>
-                setCustomer({ ...customer, phone: e.target.value })
-              }
-              className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-[#f5dc50] outline-none"
-            />
-            <input
-              type="text"
-              placeholder="Table Number / Pickup"
-              value={customer.table}
-              onChange={(e) =>
-                setCustomer({ ...customer, table: e.target.value })
-              }
-              className="border p-3 rounded-lg w-full focus:ring-2 focus:ring-[#f5dc50] outline-none"
-            />
+            <div className="p-4 bg-gray-50 rounded-lg text-gray-600 border border-gray-100">
+              <p className="flex items-center gap-2">
+                <span className="font-bold text-gray-800">Order Number:</span>
+                <span className="font-mono text-black">#{order.number}</span>
+              </p>
+              <p className="mt-2 text-sm">
+                Please show this order number at the counter when your number is
+                called.
+              </p>
+            </div>
 
-            <h3 className="text-lg font-semibold mt-4">Payment Method</h3>
-            <div className="flex items-center gap-3 mt-2">
-              <input type="radio" name="payment" checked readOnly />
-              <span className="font-medium">QR Payment</span>
+            <h3 className="text-lg font-semibold mt-6">Payment Method</h3>
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
+              <input type="radio" name="payment" checked readOnly className="accent-[#f5dc50] w-4 h-4" />
+              <span className="font-medium text-gray-800">KHQR Digital Payment</span>
             </div>
           </div>
         </section>
 
         {/* RIGHT: Order Summary */}
         <section className="flex flex-col bg-white justify-between rounded-xl shadow-md p-6">
-          <h2 className="text-2xl font-bold">Order Summary</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">Order Summary</h2>
+            <span className="text-gray-400 text-sm font-mono">
+              #{order.number}
+            </span>
+          </div>
 
-          <div className="flex-1 overflow-y-auto space-y-3 max-h-[55vh] scrollbar-hide">
+          <div className="flex-1 overflow-y-auto space-y-3 max-h-[42vh] scrollbar-hide mb-6 pr-1">
             {order.orderItems.map((item) => (
               <CartItem key={item.id} item={item} />
             ))}
           </div>
 
-          <div className="border-t pt-4 flex justify-between font-bold text-lg">
-            <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+          <div className="border-t pt-4 space-y-3">
+            <div className="flex justify-between text-gray-600">
+              <span className="text-sm">Subtotal</span>
+              <span className="font-medium font-mono">
+                ${order.subTotal?.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between text-gray-600">
+              <span className="text-sm">Tax (VAT 10%)</span>
+              <span className="font-medium font-mono">
+                ${order.tax.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center pt-3 border-t mt-3">
+              <span className="text-xl font-bold">Total</span>
+              <span className="text-2xl font-bold text-black font-mono">
+                ${order.total.toFixed(2)}
+              </span>
+            </div>
           </div>
 
-          <PaymentModal orderId={order.id} orderNumber={order.number} />
+          <div className="">
+            <PaymentModal orderId={order.id} orderNumber={order.number} />
+          </div>
         </section>
       </div>
     </div>
